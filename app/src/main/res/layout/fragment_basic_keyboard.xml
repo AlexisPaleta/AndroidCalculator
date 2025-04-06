@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/basicKeyboardLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BasicKeyboardFragment">
+
+    <!-- Contenedor principal (vertical para las filas) -->
+    <LinearLayout
+        android:id="@+id/basicLinearKeyboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Fila 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/ACbutton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/ac"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/changeSignButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/change_sign"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/percentageButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/percentage"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/divisionButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/division"
+                android:textSize="40sp" />
+        </LinearLayout>
+
+        <!-- Fila 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sevenButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/seven"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/eightButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/eight"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/nineButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/nine"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/multiplicationButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/multiplication"
+                android:textSize="40sp" />
+        </LinearLayout>
+
+        <!-- Fila 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/fourButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/four"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/fiveButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/five"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/sixButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/six"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/minusButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/minus"
+                android:textSize="40sp" />
+        </LinearLayout>
+
+        <!-- Fila 4 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/oneButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/one"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/twoButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/two"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/threeButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/three"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/plusButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/plus"
+                android:textSize="40sp" />
+        </LinearLayout>
+
+        <!-- Fila 5 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/calculatorButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/calculator"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/zeroButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/zero"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/pointButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/point"
+                android:textSize="40sp" />
+
+            <Button
+                android:id="@+id/equalButton"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/equal"
+                android:textSize="40sp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

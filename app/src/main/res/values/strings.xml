@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Calculadora</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ac">AC</string>
+    <string name="change_sign">⁺/-</string>
+    <string name="percentage">%</string>
+    <string name="division">÷</string>
+    <string name="multiplication">x</string>
+    <string name="minus">—</string>
+    <string name="plus">+</string>
+    <string name="equal">=</string>
+    <string name="calculator">🎮</string>
+    <string name="zero">0</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+    <string name="point">.</string>
+    <string name="leftParenthesis">(</string>
+    <string name="rightParenthesis">)</string>
+    <string name="mc">mc</string>
+    <string name="mPlus">m+</string>
+    <string name="mMinus">m–</string>
+    <string name="mr">mr</string>
+    <string name="secoND">2ⁿᵈ</string>
+    <string name="powerTwo">x²</string>
+    <string name="powerThree">x³</string>
+    <string name="xy">xʸ</string>
+    <string name="ex">𝑒ˣ</string>
+    <string name="tenX">10ˣ</string>
+    <string name="oneDivX">¹/ₓ</string>
+    <string name="root2">√x</string>
+    <string name="root3">∛x</string>
+    <string name="rootY">ʸ√x</string>
+    <string name="ln">ln</string>
+    <string name="log">log₁₀</string>
+    <string name="xExclamation">x!</string>
+    <string name="sin">sin</string>
+    <string name="cos">cos</string>
+    <string name="tan">tan</string>
+    <string name="e">𝑒</string>
+    <string name="EE">EE</string>
+    <string name="sinH">sinh</string>
+    <string name="cosH">cosh</string>
+    <string name="tanH">tanh</string>
+    <string name="pi">π</string>
+    <string name="Deg">Deg</string>
+    <string name="Rand">Rand</string>
+
+</resources>
