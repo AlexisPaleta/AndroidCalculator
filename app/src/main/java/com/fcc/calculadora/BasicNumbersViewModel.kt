@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class BasicNumbersViewModel: ViewModel() {
-    private var currentNumber: MutableLiveData<Float> = MutableLiveData()
+    private var currentNumber: MutableLiveData<String> = MutableLiveData("0")
 
-    fun getCurrent(): MutableLiveData<Float>{
+    fun getCurrent(): MutableLiveData<String>{
         return currentNumber
     }
 
     fun setCurrent(value: String){
-        currentNumber.value = value.toFloat();
+        currentNumber.value = value
     }
 }

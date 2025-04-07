@@ -46,14 +46,73 @@ class BasicKeyboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.ACbutton.setOnClickListener {
+            basicNumbersVM.setCurrent("0") //Reset the value of the operation to "0"
+        }
+
+        binding.zeroButton.setOnClickListener {
+            val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
+            if(currentValue != null && currentValue != "0" && currentValue.length < 10)//Only add a zero if there is not a unique zero
+                //and the limit of elements on screen is 10
+                basicNumbersVM.setCurrent(currentValue + "0")
+
+        }
+
         binding.oneButton.setOnClickListener {
-            val value = "1"
+            val value = addNumber("1")
             basicNumbersVM.setCurrent(value)
         }
 
         binding.twoButton.setOnClickListener {
-            val value = "2"
+            val value = addNumber("2")
             basicNumbersVM.setCurrent(value)
+        }
+
+        binding.threeButton.setOnClickListener {
+            val value = addNumber("3")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.fourButton.setOnClickListener {
+            val value = addNumber("4")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.fiveButton.setOnClickListener {
+            val value = addNumber("5")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.sixButton.setOnClickListener {
+            val value = addNumber("6")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.sevenButton.setOnClickListener {
+            val value = addNumber("7")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.eightButton.setOnClickListener {
+            val value = addNumber("8")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.nineButton.setOnClickListener {
+            val value = addNumber("9")
+            basicNumbersVM.setCurrent(value)
+        }
+    }
+
+    fun addNumber(number: String): String{
+        val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
+        if(basicNumbersVM.getCurrent().value == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
+            return number
+        }else if (currentValue != null && currentValue.length < 10){// Only ten elements can appear on screen
+            return currentValue + number
+        }else{
+            return currentValue + ""
         }
     }
 
