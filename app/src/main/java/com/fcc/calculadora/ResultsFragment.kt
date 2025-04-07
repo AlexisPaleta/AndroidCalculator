@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.fcc.calculadora.databinding.FragmentResultsBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,6 +25,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     private var param2: String? = null
     private var _binding: FragmentResultsBinding? = null
     private val binding get() = _binding!!
+    private lateinit var basicNumbersVM: BasicNumbersViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        basicNumbersVM = ViewModelProvider(requireParentFragment()).get(BasicNumbersViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -39,6 +43,17 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         // Inflate the layout for this fragment
         _binding = FragmentResultsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val currentNumberObserver = Observer<Float> {
+            currentNumber -> binding.resultsText.text = currentNumber.toString()
+        }
+
+        basicNumbersVM.getCurrent().observe(viewLifecycleOwner, currentNumberObserver)
+
     }
 
     companion object {

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.fcc.calculadora.databinding.FragmentBasicKeyboardBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,6 +24,7 @@ class BasicKeyboardFragment : Fragment() {
     private var param2: String? = null
     private var _binding: FragmentBasicKeyboardBinding? = null
     private val binding get() = _binding!!
+    private lateinit var basicNumbersVM: BasicNumbersViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class BasicKeyboardFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        basicNumbersVM = ViewModelProvider(requireParentFragment()).get(BasicNumbersViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -39,6 +42,19 @@ class BasicKeyboardFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentBasicKeyboardBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.oneButton.setOnClickListener {
+            val value = "1"
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.twoButton.setOnClickListener {
+            val value = "2"
+            basicNumbersVM.setCurrent(value)
+        }
     }
 
     companion object {
