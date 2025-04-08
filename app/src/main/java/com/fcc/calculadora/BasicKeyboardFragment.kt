@@ -117,6 +117,16 @@ class BasicKeyboardFragment : Fragment() {
             val value = addOperator("—")
             basicNumbersVM.setCurrent(value)
         }
+
+        binding.divisionButton.setOnClickListener {
+            val value = addOperator("÷")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.multiplicationButton.setOnClickListener {
+            val value = addOperator("x")
+            basicNumbersVM.setCurrent(value)
+        }
     }
 
     fun addNumber(number: String): String{

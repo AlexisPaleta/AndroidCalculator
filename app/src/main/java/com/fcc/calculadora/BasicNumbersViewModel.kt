@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class BasicNumbersViewModel: ViewModel() {
-    private var doOperation: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var doOperation: MutableLiveData<Boolean> = MutableLiveData()
     private var currentNumber: MutableLiveData<String> = MutableLiveData("0")
 
     fun getCurrent(): MutableLiveData<String>{

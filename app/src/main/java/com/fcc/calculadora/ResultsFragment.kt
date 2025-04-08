@@ -61,21 +61,16 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         basicNumbersVM.getCurrent().observe(viewLifecycleOwner, currentNumberObserver)
 
         val doOperationObserver = Observer<Boolean> { _ ->
-            if (changingDoOperation) return@Observer // Ignore the change of the viewModel doOperation value
-            //if it was changed by the observer
-
-            changingDoOperation = true // Chancge is by the observer
-            basicNumbersVM.setDoOperation(false)
-            changingDoOperation = false // Reset the flag
-            // checkOperation()
+            checkOperation()
         }
 
-        //basicNumbersVM.getDoOperation().observe(viewLifecycleOwner, doOperationObserver)
+        basicNumbersVM.getDoOperation().observe(viewLifecycleOwner, doOperationObserver)
 
     }
 
     fun checkOperation(){
-
+        binding.previousOperationText.text = binding.resultsText.text
+        basicNumbersVM.setCurrent("=20")
     }
 
     companion object {
