@@ -109,7 +109,7 @@ class BasicKeyboardFragment : Fragment() {
         val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
         if(basicNumbersVM.getCurrent().value == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
             return number
-        }else if (currentValue != null && currentValue.length < 10){// Only ten elements can appear on screen
+        }else if (currentValue != null && currentValue.length < 100){// Only ten elements can appear on screen
             return currentValue + number
         }else{
             return currentValue + ""

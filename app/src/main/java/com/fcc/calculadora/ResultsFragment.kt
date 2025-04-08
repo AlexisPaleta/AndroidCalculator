@@ -48,8 +48,12 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentNumberObserver = Observer<String> {
-            currentNumber -> binding.resultsText.text = currentNumber
+        val currentNumberObserver = Observer<String> { currentNumber ->
+            binding.resultsText.text = currentNumber
+            binding.resultsLayout.post{
+                binding.resultsLayout.smoothScrollTo(0, binding.resultsLayout.bottom)
+            }
+
         }
 
         basicNumbersVM.getCurrent().observe(viewLifecycleOwner, currentNumberObserver)
