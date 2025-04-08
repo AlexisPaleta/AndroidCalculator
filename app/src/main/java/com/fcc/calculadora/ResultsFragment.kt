@@ -1,6 +1,7 @@
 package com.fcc.calculadora
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     private var _binding: FragmentResultsBinding? = null
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
+    private var changingDoOperation = false //I want to modify the viewModel value in the observer process
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,22 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }
 
         basicNumbersVM.getCurrent().observe(viewLifecycleOwner, currentNumberObserver)
+
+        val doOperationObserver = Observer<Boolean> { _ ->
+            if (changingDoOperation) return@Observer // Ignore the change of the viewModel doOperation value
+            //if it was changed by the observer
+
+            changingDoOperation = true // Chancge is by the observer
+            basicNumbersVM.setDoOperation(false)
+            changingDoOperation = false // Reset the flag
+            // checkOperation()
+        }
+
+        //basicNumbersVM.getDoOperation().observe(viewLifecycleOwner, doOperationObserver)
+
+    }
+
+    fun checkOperation(){
 
     }
 

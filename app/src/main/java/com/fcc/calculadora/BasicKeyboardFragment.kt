@@ -103,17 +103,51 @@ class BasicKeyboardFragment : Fragment() {
             val value = addNumber("9")
             basicNumbersVM.setCurrent(value)
         }
+
+        binding.equalButton.setOnClickListener {
+            basicNumbersVM.setDoOperation(true)
+        }
+
+        binding.plusButton.setOnClickListener {
+            val value = addOperator("+")
+            basicNumbersVM.setCurrent(value)
+        }
+
+        binding.minusButton.setOnClickListener {
+            val value = addOperator("—")
+            basicNumbersVM.setCurrent(value)
+        }
     }
 
     fun addNumber(number: String): String{
         val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
-        if(basicNumbersVM.getCurrent().value == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
+        if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
             return number
         }else if (currentValue != null && currentValue.length < 100){// Only ten elements can appear on screen
             return currentValue + number
         }else{
             return currentValue + ""
         }
+    }
+
+    fun addOperator(operator: String): String{
+        val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
+        if (currentValue == null)
+            return "ERROR"
+        val lastElement = currentValue.get(currentValue.length - 1).toString()
+        val operators = listOf("+","—","÷","x")
+
+        //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
+        if(lastElement in operators){
+            return currentValue.dropLast(1) + operator //Drops last character and replaces with the new operator
+        }else{
+            return currentValue + operator
+        }
+
+    }
+
+    fun equalButtonPressed(){
+
     }
 
     companion object {
