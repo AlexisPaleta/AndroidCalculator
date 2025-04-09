@@ -133,6 +133,25 @@ class BasicKeyboardFragment : Fragment() {
             val value = addOperator("x")
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.pointButton.setOnClickListener {
+            val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+            if(!basicNumbersVM.isFloatNumber()){ //Only add the "." when the number was not already a float
+                basicNumbersVM.setFloat(true)
+                if (currentValue == "0") {
+                    basicNumbersVM.addDigit()
+                    basicNumbersVM.setCurrentOperation("0.")
+                }else{
+                    if(basicNumbersVM.getNumberLength() == 0){
+                        basicNumbersVM.addDigit()
+                        basicNumbersVM.setCurrentOperation(currentValue + "0.")
+                    }else{
+                        basicNumbersVM.setCurrentOperation(currentValue + ".")
+                    }
+
+                }
+            }
+        }
     }
 
     fun addNumber(number: String): String{
@@ -156,6 +175,7 @@ class BasicKeyboardFragment : Fragment() {
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         val operators = listOf("+","—","÷","x")
         basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
+        basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
         //so the length needs to be 0
         //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
         if(lastElement in operators){
@@ -166,6 +186,14 @@ class BasicKeyboardFragment : Fragment() {
     }
 
     fun isMaximumNumberLength(): Boolean{ //The maximum digits that a number can have is 10
+
+        if(basicNumbersVM.isFloatNumber() && basicNumbersVM.getNumberLength() > 13){//If the current number is float, then the maximum length increments, now is 14
+            displayMessage("Maximum float length is 14 digits")
+            return true
+        }else if(basicNumbersVM.isFloatNumber()){
+            return false
+        }
+
         if(basicNumbersVM.getNumberLength() > 9){
             displayMessage("Maximum number length is 10 digits")
             return true
