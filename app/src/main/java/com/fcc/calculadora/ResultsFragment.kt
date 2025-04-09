@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fcc.calculadora.databinding.FragmentResultsBinding
+import org.mariuszgromada.math.mxparser.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,8 +69,44 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     }
 
     fun checkOperation(){
-        binding.previousOperationText.text = binding.resultsText.text
-        basicNumbersVM.setCurrentOperation("=20")
+
+        val cleaned = checkEmptyPoints()
+        val formatted = changeFormat(cleaned)
+        val expression = Expression(formatted)
+        val result = expression.calculate()
+
+
+
+        if(!basicNumbersVM.isFloatNumber()){
+            val finalResult = result.toInt().toString()
+            binding.previousOperationText.text = cleaned
+            basicNumbersVM.setCurrentOperation(finalResult)
+        }else{
+            val finalResult = result.toString()
+            binding.previousOperationText.text = cleaned
+            basicNumbersVM.setCurrentOperation(finalResult)
+        }
+
+    }
+
+    fun checkEmptyPoints(): String{
+        var currentOperation = basicNumbersVM.getCurrentOperation().value
+        if (currentOperation == null)
+            return "ERROR"
+
+        currentOperation = currentOperation.replace(".+",".0+")
+        currentOperation = currentOperation.replace(".—",".0—")
+        currentOperation = currentOperation.replace(".÷",".0÷")
+        currentOperation = currentOperation.replace(".x",".0x")
+
+        return currentOperation
+    }
+
+    fun changeFormat(op: String): String{
+        var operation = op
+        operation = operation.replace("x","*")
+        operation = operation.replace("÷","/")
+        return operation
     }
 
     companion object {
