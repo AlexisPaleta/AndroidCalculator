@@ -1,7 +1,6 @@
 package com.fcc.calculadora
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,15 +49,15 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentNumberObserver = Observer<String> { currentNumber ->
-            binding.resultsText.text = currentNumber
+        val currentNumberObserver = Observer<String> { currentOperation ->
+            binding.resultsText.text = currentOperation
             binding.resultsLayout.post{
                 binding.resultsLayout.smoothScrollTo(0, binding.resultsLayout.bottom)
             }
 
         }
 
-        basicNumbersVM.getCurrent().observe(viewLifecycleOwner, currentNumberObserver)
+        basicNumbersVM.getCurrentOperation().observe(viewLifecycleOwner, currentNumberObserver)
 
         val doOperationObserver = Observer<Boolean> { _ ->
             checkOperation()
@@ -70,7 +69,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
 
     fun checkOperation(){
         binding.previousOperationText.text = binding.resultsText.text
-        basicNumbersVM.setCurrent("=20")
+        basicNumbersVM.setCurrentOperation("=20")
     }
 
     companion object {
