@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.fcc.calculadora.databinding.FragmentBasicKeyboardBinding
+import android.widget.Toast
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +26,7 @@ class BasicKeyboardFragment : Fragment() {
     private var _binding: FragmentBasicKeyboardBinding? = null
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
+    private var currentToast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,60 +50,64 @@ class BasicKeyboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.ACbutton.setOnClickListener {
-            basicNumbersVM.setCurrent("0") //Reset the value of the operation to "0"
+            basicNumbersVM.setCurrentOperation("0") //Reset the value of the operation to "0"
+            basicNumbersVM.resetNumberLength() //Reset current number length because it is only a "0"
+            basicNumbersVM.setFloat(false) //The current number is just a "0", it is not a float
         }
 
         binding.zeroButton.setOnClickListener {
-            val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
-            if(currentValue != null && currentValue != "0" && currentValue.length < 10)//Only add a zero if there is not a unique zero
+            val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+            if (!isMaximumNumberLength() && currentValue != "0") { //Only add a zero if there is not a unique zero
                 //and the limit of elements on screen is 10
-                basicNumbersVM.setCurrent(currentValue + "0")
+                basicNumbersVM.addDigit()
+                basicNumbersVM.setCurrentOperation(currentValue + "0")
+            }
 
         }
 
         binding.oneButton.setOnClickListener {
             val value = addNumber("1")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.twoButton.setOnClickListener {
             val value = addNumber("2")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.threeButton.setOnClickListener {
             val value = addNumber("3")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.fourButton.setOnClickListener {
             val value = addNumber("4")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.fiveButton.setOnClickListener {
             val value = addNumber("5")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.sixButton.setOnClickListener {
             val value = addNumber("6")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.sevenButton.setOnClickListener {
             val value = addNumber("7")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.eightButton.setOnClickListener {
             val value = addNumber("8")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.nineButton.setOnClickListener {
             val value = addNumber("9")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.equalButton.setOnClickListener {
@@ -110,30 +116,52 @@ class BasicKeyboardFragment : Fragment() {
 
         binding.plusButton.setOnClickListener {
             val value = addOperator("+")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.minusButton.setOnClickListener {
             val value = addOperator("—")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.divisionButton.setOnClickListener {
             val value = addOperator("÷")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.multiplicationButton.setOnClickListener {
             val value = addOperator("x")
-            basicNumbersVM.setCurrent(value)
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.pointButton.setOnClickListener {
+            val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+            if(!basicNumbersVM.isFloatNumber()){ //Only add the "." when the number was not already a float
+                basicNumbersVM.setFloat(true)
+                if (currentValue == "0") {
+                    basicNumbersVM.addDigit()
+                    basicNumbersVM.setCurrentOperation("0.")
+                }else{
+                    if(basicNumbersVM.getNumberLength() == 0){
+                        basicNumbersVM.addDigit()
+                        basicNumbersVM.setCurrentOperation(currentValue + "0.")
+                    }else{
+                        basicNumbersVM.setCurrentOperation(currentValue + ".")
+                    }
+
+                }
+            }
         }
     }
 
     fun addNumber(number: String): String{
-        val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
+        val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
+            basicNumbersVM.addDigit()
             return number
-        }else if (currentValue != null && currentValue.length < 100){// Only ten elements can appear on screen
+        }else if (!isMaximumNumberLength()){// check if the current number is not too large
+            basicNumbersVM.addDigit()
+            displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
             return currentValue + number
         }else{
             return currentValue + ""
@@ -141,19 +169,42 @@ class BasicKeyboardFragment : Fragment() {
     }
 
     fun addOperator(operator: String): String{
-        val currentValue  = basicNumbersVM.getCurrent().value //Check actual operation
+        val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         val operators = listOf("+","—","÷","x")
-
+        basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
+        basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
+        //so the length needs to be 0
         //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
         if(lastElement in operators){
             return currentValue.dropLast(1) + operator //Drops last character and replaces with the new operator
         }else{
             return currentValue + operator
         }
+    }
 
+    fun isMaximumNumberLength(): Boolean{ //The maximum digits that a number can have is 10
+
+        if(basicNumbersVM.isFloatNumber() && basicNumbersVM.getNumberLength() > 13){//If the current number is float, then the maximum length increments, now is 14
+            displayMessage("Maximum float length is 14 digits")
+            return true
+        }else if(basicNumbersVM.isFloatNumber()){
+            return false
+        }
+
+        if(basicNumbersVM.getNumberLength() > 9){
+            displayMessage("Maximum number length is 10 digits")
+            return true
+        }
+        return false
+    }
+
+    fun displayMessage(message: String) {
+        currentToast?.cancel()
+        currentToast = Toast.makeText(activity,message,Toast.LENGTH_SHORT)
+        currentToast?.show()
     }
 
     fun equalButtonPressed(){
