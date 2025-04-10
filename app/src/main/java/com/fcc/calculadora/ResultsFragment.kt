@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fcc.calculadora.databinding.FragmentResultsBinding
 import org.mariuszgromada.math.mxparser.*
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,14 +77,34 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         val expression = Expression(formatted)
         val result = expression.calculate()
 
+        //The isFloatNumber() functions is activated only when a point is used to do an operation, but It is necessary to also
+        //check the result value returned by mXparser.For example if the written operation is 1÷2, the isFloatNumber() function
+        //will not be called, but the result is will be a float so the resultText will wrongly write an int value, that is the reason
+        //why this comprobation is necessary. Other case that is considered as a non float number is when it is very big
+        //and is written in scientific format like 1.2E20
+        val isIntFloat: Boolean
+        if(result.toString().endsWith(".0") || result.toString().contains('E')){
+            isIntFloat = true
+        }else{
+            isIntFloat = false
+        }
 
+        println(result)
 
-        if(!basicNumbersVM.isFloatNumber()){
-            val finalResult = result.toInt().toString()
+        if(!basicNumbersVM.isFloatNumber() && isIntFloat){
+            val finalResult: String
+
+            if(result.toString().contains('E')){//Check if the number is in scientific format or not
+                //this is to print it correctly
+                finalResult = cleanAfterPoint(result, true)
+            }else{
+                finalResult = result.toInt().toString()
+            }
+
             binding.previousOperationText.text = cleaned
             basicNumbersVM.setCurrentOperation(finalResult)
         }else{
-            val finalResult = result.toString()
+            val finalResult: String = cleanAfterPoint(result, false)
             binding.previousOperationText.text = cleaned
             basicNumbersVM.setCurrentOperation(finalResult)
         }
@@ -106,7 +128,30 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         var operation = op
         operation = operation.replace("x","*")
         operation = operation.replace("÷","/")
+        operation = operation.replace("—","-")
         return operation
+    }
+
+    fun cleanAfterPoint(result: Number, isInScientificNotat: Boolean): String{
+
+        if(isInScientificNotat && result.toString().length>11){
+            val dividedNumber = result.toString().split('E')//Separate the number from the scientific notation 'E' exponent
+            val reducedNumber = BigDecimal(dividedNumber[0]).setScale((9), RoundingMode.HALF_UP).toString()
+            var reformattedResult = "E" + dividedNumber[1]//First reAdd the 'E' that the split omitted
+            return reducedNumber + reformattedResult
+
+        }
+
+        if(result.toString().length>11){//Check if the float result is too large, count all the
+            //characters (including the ".") and if the condition is true then round the number at the
+            //decimal that is the limit of the length permitted
+            val dividedNumber = result.toString().split('.')//obtain the int part and the decimal part
+            val permittedDecimals = 10 - dividedNumber[0].length//subtraction of 11 - the length of the decimal part
+            //that is gonna be the quantity of permittedDecimals
+            return BigDecimal(result.toString()).setScale((permittedDecimals), RoundingMode.HALF_UP).toString()
+        }else{
+            return result.toString()
+        }
     }
 
     companion object {
