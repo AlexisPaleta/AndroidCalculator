@@ -53,6 +53,7 @@ class BasicKeyboardFragment : Fragment() {
             basicNumbersVM.setCurrentOperation("0") //Reset the value of the operation to "0"
             basicNumbersVM.resetNumberLength() //Reset current number length because it is only a "0"
             basicNumbersVM.setFloat(false) //The current number is just a "0", it is not a float
+            basicNumbersVM.setNaN(false)
         }
 
         binding.zeroButton.setOnClickListener {
@@ -155,7 +156,13 @@ class BasicKeyboardFragment : Fragment() {
     }
 
     fun addNumber(number: String): String{
-        val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        if(basicNumbersVM.isNaN()){
+            basicNumbersVM.resetNumberLength()
+            basicNumbersVM.setFloat(false)
+            currentValue = "0"
+            basicNumbersVM.setNaN(false)
+        }
         if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
             basicNumbersVM.addDigit()
             return number
@@ -169,7 +176,13 @@ class BasicKeyboardFragment : Fragment() {
     }
 
     fun addOperator(operator: String): String{
-        val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        if(basicNumbersVM.isNaN()){
+            basicNumbersVM.resetNumberLength()
+            basicNumbersVM.setFloat(false)
+            currentValue = "0"
+            basicNumbersVM.setNaN(false)
+        }
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()

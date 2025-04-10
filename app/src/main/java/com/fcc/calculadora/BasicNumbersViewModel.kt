@@ -8,7 +8,7 @@ class BasicNumbersViewModel: ViewModel() {
     private var currentOperation: MutableLiveData<String> = MutableLiveData("0") //current information in the resultsText view
     private var numberLength: Int = 0 //Count the length of the current number to limit it
     private var floatNumber: Boolean = false //Boolean to know if the current number is a float
-
+    private var isNaN: Boolean = false
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -36,11 +36,23 @@ class BasicNumbersViewModel: ViewModel() {
         numberLength = 0
     }
 
+    fun setNumberLength(length: Int){
+        this.numberLength = length
+    }
+
     fun setFloat(floatNumber: Boolean){
         this.floatNumber = floatNumber
     }
 
     fun isFloatNumber(): Boolean{
         return floatNumber
+    }
+
+    fun isNaN(): Boolean{
+        return this.isNaN
+    }
+
+    fun setNaN(nan: Boolean){
+        isNaN = nan
     }
 }

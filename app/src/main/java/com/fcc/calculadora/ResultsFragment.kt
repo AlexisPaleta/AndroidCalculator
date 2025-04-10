@@ -29,7 +29,6 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     private var _binding: FragmentResultsBinding? = null
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
-    private var changingDoOperation = false //I want to modify the viewModel value in the observer process
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +76,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         val expression = Expression(formatted)
         val result = expression.calculate()
 
-        //The isFloatNumber() functions is activated only when a point is used to do an operation, but It is necessary to also
+        //The isFloatNumber() is for only limit the length of the written number,
+        // to know if the result is a float another variable is needed.It is necessary to
         //check the result value returned by mXparser.For example if the written operation is 1÷2, the isFloatNumber() function
         //will not be called, but the result is will be a float so the resultText will wrongly write an int value, that is the reason
         //why this comprobation is necessary. Other case that is considered as a non float number is when it is very big
@@ -91,7 +91,12 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
 
         println(result)
 
-        if(!basicNumbersVM.isFloatNumber() && isIntFloat){
+        //Check if the result is not NaN
+        if(result.toString() == "NaN"){
+            basicNumbersVM.setNaN(true)
+        }
+
+        if(isIntFloat){
             val finalResult: String
 
             if(result.toString().contains('E')){//Check if the number is in scientific format or not
@@ -103,10 +108,27 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
 
             binding.previousOperationText.text = cleaned
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setFloat(false)
+            var numberLength = 0
+            if(finalResult.contains('E')){
+                //I want to know the length of the result because when after it appears on the
+                //resultText the user could add digits, but I will allow it only if the length
+                //is < 11 for not float numbers and < 15 for float numbers
+                val numberWithoutScientificNotation = finalResult.split('E')[0]
+                numberLength = numberWithoutScientificNotation.length - 1//Minus 1 because there is a "."
+            }else{
+                numberLength = finalResult.length
+            }
+            basicNumbersVM.setNumberLength(numberLength)
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
             binding.previousOperationText.text = cleaned
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setFloat(true)
+            val numberLength = finalResult.length - 1//The minus is because there is a "."
+            basicNumbersVM.setNumberLength(numberLength)
+
+
         }
 
     }
