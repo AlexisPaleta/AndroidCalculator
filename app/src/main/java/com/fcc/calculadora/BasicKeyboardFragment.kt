@@ -146,7 +146,7 @@ class BasicKeyboardFragment : Fragment() {
                 if (currentValue == "0") {
                     basicNumbersVM.addDigit()
                     basicNumbersVM.setCurrentOperation("0.")
-                    basicNumbersVM.addCharCurrentNumber('.')
+                    basicNumbersVM.setCurrentNumber("+0.")
                     println("Current number: ${basicNumbersVM.getCurrentNumber()}")
                 }else{
                     if(basicNumbersVM.getNumberLength() == 0){//This case is only activated when
