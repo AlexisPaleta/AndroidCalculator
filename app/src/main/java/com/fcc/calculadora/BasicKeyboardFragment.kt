@@ -54,6 +54,8 @@ class BasicKeyboardFragment : Fragment() {
             basicNumbersVM.resetNumberLength() //Reset current number length because it is only a "0"
             basicNumbersVM.setFloat(false) //The current number is just a "0", it is not a float
             basicNumbersVM.setNaN(false)
+            basicNumbersVM.setCurrentNumber("0")
+            println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         }
 
         binding.zeroButton.setOnClickListener {
@@ -61,53 +63,55 @@ class BasicKeyboardFragment : Fragment() {
             if (!isMaximumNumberLength() && currentValue != "0") { //Only add a zero if there is not a unique zero
                 //and the limit of elements on screen is 10
                 basicNumbersVM.addDigit()
-                basicNumbersVM.setCurrentOperation(currentValue + "0")
+                basicNumbersVM.setCurrentOperation(currentValue + '0')
+                basicNumbersVM.addCharCurrentNumber('0')
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
 
         }
 
         binding.oneButton.setOnClickListener {
-            val value = addNumber("1")
+            val value = addNumber('1')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.twoButton.setOnClickListener {
-            val value = addNumber("2")
+            val value = addNumber('2')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.threeButton.setOnClickListener {
-            val value = addNumber("3")
+            val value = addNumber('3')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.fourButton.setOnClickListener {
-            val value = addNumber("4")
+            val value = addNumber('4')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.fiveButton.setOnClickListener {
-            val value = addNumber("5")
+            val value = addNumber('5')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.sixButton.setOnClickListener {
-            val value = addNumber("6")
+            val value = addNumber('6')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.sevenButton.setOnClickListener {
-            val value = addNumber("7")
+            val value = addNumber('7')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.eightButton.setOnClickListener {
-            val value = addNumber("8")
+            val value = addNumber('8')
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.nineButton.setOnClickListener {
-            val value = addNumber("9")
+            val value = addNumber('9')
             basicNumbersVM.setCurrentOperation(value)
         }
 
@@ -121,7 +125,7 @@ class BasicKeyboardFragment : Fragment() {
         }
 
         binding.minusButton.setOnClickListener {
-            val value = addOperator("—")
+            val value = addOperator("-")
             basicNumbersVM.setCurrentOperation(value)
         }
 
@@ -142,33 +146,98 @@ class BasicKeyboardFragment : Fragment() {
                 if (currentValue == "0") {
                     basicNumbersVM.addDigit()
                     basicNumbersVM.setCurrentOperation("0.")
+                    basicNumbersVM.addCharCurrentNumber('.')
+                    println("Current number: ${basicNumbersVM.getCurrentNumber()}")
                 }else{
-                    if(basicNumbersVM.getNumberLength() == 0){
+                    if(basicNumbersVM.getNumberLength() == 0){//This case is only activated when
+                        //an operator was pressed
+                        val sign = basicNumbersVM.getCurrentNumber() //Recover the sign (remember that it can be
+                        // only a "+" or "-" because of the addOperator method)
                         basicNumbersVM.addDigit()
                         basicNumbersVM.setCurrentOperation(currentValue + "0.")
+                        basicNumbersVM.setCurrentNumber(sign + "0.")
+                        println("Current number: ${basicNumbersVM.getCurrentNumber()}")
                     }else{
                         basicNumbersVM.setCurrentOperation(currentValue + ".")
+                        basicNumbersVM.addCharCurrentNumber('.')
+                        println("Current number: ${basicNumbersVM.getCurrentNumber()}")
                     }
 
                 }
             }
         }
+
+        binding.changeSignButton.setOnClickListener {
+            val oldNumber = basicNumbersVM.getCurrentNumber()
+            if(!basicNumbersVM.isNaN() && oldNumber != "0" && oldNumber.length > 1){//Only executes when
+                //there is a number on screen, not a zero, not only a sign
+
+                var changedNumber: String
+                var sign: String//This is because if the new sign is a "+" it will not be displayed
+                //at the result text, it will only appear if the sign is a "-"
+                if(oldNumber.startsWith("+")){
+                    changedNumber = oldNumber.drop(1)//Remove the first digit, the sign
+                    basicNumbersVM.setCurrentNumber("-$changedNumber")
+                    sign = "-"
+                }else{
+                    changedNumber = oldNumber.drop(1)//Remove the first digit, the sign
+                    basicNumbersVM.setCurrentNumber("+$changedNumber")
+                    sign =  ""
+                }
+                val currentNumberLength = changedNumber.length
+                val totalLength = basicNumbersVM.getCurrentOperation().value?.length
+                var isThereAMinus: Char?
+
+
+                val searchNumber = if(oldNumber.startsWith("-")) oldNumber else oldNumber.drop(1)
+                var searchNumber2: String = searchNumber
+                if(totalLength!! > currentNumberLength ){
+                    isThereAMinus = basicNumbersVM.getCurrentOperation().value?.get(totalLength - currentNumberLength - 1)
+                    println("total $totalLength, curren $currentNumberLength ,isThereAMinus $isThereAMinus")
+                    if(isThereAMinus == '-' && oldNumber.startsWith("-")){
+                        sign = "+"
+                    }else if (isThereAMinus == '+' && oldNumber.startsWith("+")){
+                        sign = "-"
+                        searchNumber2 = "+" + searchNumber2
+                    }
+                }
+
+
+
+                if(oldNumber.startsWith("-")){
+                    searchNumber2 = oldNumber
+                }else{
+
+                }
+                //val newOperation = basicNumbersVM.getCurrentOperation().value?.dropLast(currentNumberLength) + sign + changedNumber
+                val newOperation = basicNumbersVM.getCurrentOperation().value?.replaceLast(searchNumber2, (sign + changedNumber)) + ""
+                basicNumbersVM.setCurrentOperation(newOperation)
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }
+        }
     }
 
-    fun addNumber(number: String): String{
+    fun addNumber(number: Char): String{
         var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if(basicNumbersVM.isNaN()){
             basicNumbersVM.resetNumberLength()
             basicNumbersVM.setFloat(false)
             currentValue = "0"
             basicNumbersVM.setNaN(false)
+            basicNumbersVM.setCurrentNumber("0")
+            println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         }
         if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
             basicNumbersVM.addDigit()
-            return number
+            basicNumbersVM.setCurrentNumber("+$number")//If the resultText is showing "0" and the user types a number it will always
+            //be positive, if the user press "-" the operation will be "0-" that is the reason
+            println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            return number.toString()
         }else if (!isMaximumNumberLength()){// check if the current number is not too large
             basicNumbersVM.addDigit()
             displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
+            basicNumbersVM.addCharCurrentNumber(number)
+            println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             return currentValue + number
         }else{
             return currentValue + ""
@@ -182,15 +251,24 @@ class BasicKeyboardFragment : Fragment() {
             basicNumbersVM.setFloat(false)
             currentValue = "0"
             basicNumbersVM.setNaN(false)
+            basicNumbersVM.setCurrentNumber("0")
         }
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
-        val operators = listOf("+","—","÷","x")
+        val operators = listOf("+","-","÷","x")
         basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
         basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
         //so the length needs to be 0
         //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
+        if(operator == "-"){
+            basicNumbersVM.setCurrentNumber("-")//If a sign is added the current number "restarts" and it will
+            //be a negative only if the minus operator is pressed, in other case it will be considered
+            //as a positive number, the only way to transform this number into negative is using the changeSign Button
+        }else{
+            basicNumbersVM.setCurrentNumber("+")
+        }
+        println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         if(lastElement in operators){
             return currentValue.dropLast(1) + operator //Drops last character and replaces with the new operator
         }else{
@@ -218,6 +296,16 @@ class BasicKeyboardFragment : Fragment() {
         currentToast?.cancel()
         currentToast = Toast.makeText(activity,message,Toast.LENGTH_SHORT)
         currentToast?.show()
+    }
+
+    fun String.replaceLast(oldValue: String, newValue: String): String { //Function used when the changeSignButton was pressed
+        val lastIndex = lastIndexOf(oldValue)
+        if (lastIndex == -1) {
+            return "Error"
+        }
+        val prefix = substring(0, lastIndex)
+        val suffix = substring(lastIndex + oldValue.length)
+        return "$prefix$newValue$suffix"
     }
 
     fun equalButtonPressed(){

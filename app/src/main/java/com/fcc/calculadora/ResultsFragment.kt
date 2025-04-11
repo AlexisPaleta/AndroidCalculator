@@ -72,7 +72,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     fun checkOperation(){
 
         val cleaned = checkEmptyPoints()
-        val formatted = changeFormat(cleaned)
+        val checked = checkFinalCharacter(cleaned)
+        val formatted = changeFormat(checked)
         val expression = Expression(formatted)
         val result = expression.calculate()
 
@@ -89,7 +90,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             isIntFloat = false
         }
 
-        println(result)
+        println("Result: $result")
 
         //Check if the result is not NaN
         if(result.toString() == "NaN"){
@@ -106,9 +107,17 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 finalResult = result.toInt().toString()
             }
 
-            binding.previousOperationText.text = cleaned
+            binding.previousOperationText.text = checked
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(false)
+            if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
+                //this is for the changeSignButton
+                basicNumbersVM.setCurrentNumber(finalResult)
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }else{
+                basicNumbersVM.setCurrentNumber("+$finalResult")
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }
             var numberLength = 0
             if(finalResult.contains('E')){
                 //I want to know the length of the result because when after it appears on the
@@ -122,9 +131,17 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             basicNumbersVM.setNumberLength(numberLength)
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
-            binding.previousOperationText.text = cleaned
+            binding.previousOperationText.text = checked
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(true)
+            if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
+                //this is for the changeSignButton
+                basicNumbersVM.setCurrentNumber(finalResult)
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }else{
+                basicNumbersVM.setCurrentNumber("+$finalResult")
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }
             val numberLength = finalResult.length - 1//The minus is because there is a "."
             basicNumbersVM.setNumberLength(numberLength)
 
@@ -139,7 +156,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             return "ERROR"
 
         currentOperation = currentOperation.replace(".+",".0+")
-        currentOperation = currentOperation.replace(".—",".0—")
+        currentOperation = currentOperation.replace(".-",".0-")
         currentOperation = currentOperation.replace(".÷",".0÷")
         currentOperation = currentOperation.replace(".x",".0x")
 
@@ -174,6 +191,19 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }else{
             return result.toString()
         }
+    }
+
+    fun checkFinalCharacter(cleaned: String): String{//This function is to fix the operations like "1.", "1x", "1÷"
+        //because they cause a NaN result, that apparently happens only when it is the final of the operation
+        //I mean, when the operation is like "1.+1" the result does not fails
+        if (cleaned.endsWith('.')){
+            return cleaned + '0'
+        }else if(cleaned.endsWith('x') || cleaned.endsWith('÷')){
+            return cleaned + '1'
+        }else{
+            return cleaned
+        }
+
     }
 
     companion object {

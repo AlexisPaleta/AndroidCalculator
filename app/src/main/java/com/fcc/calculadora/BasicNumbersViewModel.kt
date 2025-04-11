@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 class BasicNumbersViewModel: ViewModel() {
     private var doOperation: MutableLiveData<Boolean> = MutableLiveData()
     private var currentOperation: MutableLiveData<String> = MutableLiveData("0") //current information in the resultsText view
-    private var numberLength: Int = 0 //Count the length of the current number to limit it
+    private var numberLength: Int = 0 //Count the length of the current number to limit it, this does not counts the "."
     private var floatNumber: Boolean = false //Boolean to know if the current number is a float
     private var isNaN: Boolean = false
+    private var currentNumber: String = "0" //This is for the changeSignButton, I need to know
+    //the number and its sign to change it if necessary
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -54,5 +56,17 @@ class BasicNumbersViewModel: ViewModel() {
 
     fun setNaN(nan: Boolean){
         isNaN = nan
+    }
+
+    fun getCurrentNumber(): String{
+        return currentNumber
+    }
+
+    fun setCurrentNumber(current: String){
+        currentNumber = current
+    }
+
+    fun addCharCurrentNumber(character: Char){
+        currentNumber += character
     }
 }
