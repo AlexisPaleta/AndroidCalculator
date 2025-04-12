@@ -113,15 +113,17 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             binding.previousOperationText.text = checked
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(false)
+            var numberLength = finalResult.length
             if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
                 //this is for the changeSignButton
                 basicNumbersVM.setCurrentNumber(finalResult)
+                numberLength -= 1 //The minus is because there is a "-"
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }else{
                 basicNumbersVM.setCurrentNumber("+$finalResult")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
-            var numberLength = 0
+
             if(finalResult.contains('E')){
                 //I want to know the length of the result because when after it appears on the
                 //resultText the user could add digits, but I will allow it only if the length
@@ -137,15 +139,17 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             binding.previousOperationText.text = checked
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(true)
+            var numberLength = finalResult.length - 1//The minus is because there is a "."
             if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
                 //this is for the changeSignButton
                 basicNumbersVM.setCurrentNumber(finalResult)
+                numberLength -= 1 //The minus is because there is a "-"
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }else{
                 basicNumbersVM.setCurrentNumber("+$finalResult")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
-            val numberLength = finalResult.length - 1//The minus is because there is a "."
+
             basicNumbersVM.setNumberLength(numberLength)
 
 

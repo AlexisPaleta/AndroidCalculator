@@ -11,6 +11,11 @@ class BasicNumbersViewModel: ViewModel() {
     private var isNaN: Boolean = false
     private var currentNumber: String = "0" //This is for the changeSignButton, I need to know
     //the number and its sign to change it if necessary
+    private var previousNumber: String = "0"//This is for the percentageButton, I need to know the previous number because
+    //if the user types 100-2%, the user wants that the percentage value is the 2% of 100. This operation happens only when a
+    //"-" or "+" is the previous operator. It is necessary to store the previous number at a different variable because when an
+    //operator is pressed the current number is just the sign so I will not be able to know of what number I have to obtain
+    //the percentage
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -68,5 +73,13 @@ class BasicNumbersViewModel: ViewModel() {
 
     fun addCharCurrentNumber(character: Char){
         currentNumber += character
+    }
+
+    fun getPreviousNumber(): String{
+        return previousNumber
+    }
+
+    fun setPreviousNumber(number: String){
+        previousNumber = number
     }
 }
