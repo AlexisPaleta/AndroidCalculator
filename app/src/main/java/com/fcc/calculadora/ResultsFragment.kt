@@ -29,7 +29,6 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     private var _binding: FragmentResultsBinding? = null
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
-    private var changingDoOperation = false //I want to modify the viewModel value in the observer process
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,13 +70,18 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     }
 
     fun checkOperation(){
-
+        //mXparser.setEpsilon(1e-20)
+        //mXparser.disableCanonicalRounding()
+        println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
         val cleaned = checkEmptyPoints()
-        val formatted = changeFormat(cleaned)
+        val checked = checkFinalCharacter(cleaned)
+        val formatted = changeFormat(checked)
+        println("Formatted: " + formatted)
         val expression = Expression(formatted)
         val result = expression.calculate()
 
-        //The isFloatNumber() functions is activated only when a point is used to do an operation, but It is necessary to also
+        //The isFloatNumber() is for only limit the length of the written number,
+        // to know if the result is a float another variable is needed.It is necessary to
         //check the result value returned by mXparser.For example if the written operation is 1÷2, the isFloatNumber() function
         //will not be called, but the result is will be a float so the resultText will wrongly write an int value, that is the reason
         //why this comprobation is necessary. Other case that is considered as a non float number is when it is very big
@@ -89,9 +93,14 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             isIntFloat = false
         }
 
-        println(result)
+        println("Result: $result")
 
-        if(!basicNumbersVM.isFloatNumber() && isIntFloat){
+        //Check if the result is not NaN
+        if(result.toString() == "NaN"){
+            basicNumbersVM.setNaN(true)
+        }
+
+        if(isIntFloat){
             val finalResult: String
 
             if(result.toString().contains('E')){//Check if the number is in scientific format or not
@@ -101,12 +110,49 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 finalResult = result.toInt().toString()
             }
 
-            binding.previousOperationText.text = cleaned
+            binding.previousOperationText.text = checked
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setFloat(false)
+            var numberLength = finalResult.length
+            if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
+                //this is for the changeSignButton
+                basicNumbersVM.setCurrentNumber(finalResult)
+                numberLength -= 1 //The minus is because there is a "-"
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }else{
+                basicNumbersVM.setCurrentNumber("+$finalResult")
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }
+
+            if(finalResult.contains('E')){
+                //I want to know the length of the result because when after it appears on the
+                //resultText the user could add digits, but I will allow it only if the length
+                //is < 11 for not float numbers and < 15 for float numbers
+                val numberWithoutScientificNotation = finalResult.split('E')[0]
+                numberLength = numberWithoutScientificNotation.length - 1//Minus 1 because there is a "."
+            }else{
+                numberLength = finalResult.length
+            }
+            basicNumbersVM.setNumberLength(numberLength)
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
-            binding.previousOperationText.text = cleaned
+            binding.previousOperationText.text = checked
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setFloat(true)
+            var numberLength = finalResult.length - 1//The minus is because there is a "."
+            if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
+                //this is for the changeSignButton
+                basicNumbersVM.setCurrentNumber(finalResult)
+                numberLength -= 1 //The minus is because there is a "-"
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }else{
+                basicNumbersVM.setCurrentNumber("+$finalResult")
+                println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            }
+
+            basicNumbersVM.setNumberLength(numberLength)
+
+
         }
 
     }
@@ -117,7 +163,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             return "ERROR"
 
         currentOperation = currentOperation.replace(".+",".0+")
-        currentOperation = currentOperation.replace(".—",".0—")
+        currentOperation = currentOperation.replace(".-",".0-")
         currentOperation = currentOperation.replace(".÷",".0÷")
         currentOperation = currentOperation.replace(".x",".0x")
 
@@ -142,16 +188,29 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
 
         }
 
-        if(result.toString().length>11){//Check if the float result is too large, count all the
+        if(result.toString().length>14){//Check if the float result is too large, count all the
             //characters (including the ".") and if the condition is true then round the number at the
             //decimal that is the limit of the length permitted
             val dividedNumber = result.toString().split('.')//obtain the int part and the decimal part
-            val permittedDecimals = 10 - dividedNumber[0].length//subtraction of 11 - the length of the decimal part
+            val permittedDecimals = 14 - dividedNumber[0].length//subtraction of 14 - the length of the decimal part
             //that is gonna be the quantity of permittedDecimals
             return BigDecimal(result.toString()).setScale((permittedDecimals), RoundingMode.HALF_UP).toString()
         }else{
             return result.toString()
         }
+    }
+
+    fun checkFinalCharacter(cleaned: String): String{//This function is to fix the operations like "1.", "1x", "1÷"
+        //because they cause a NaN result, that apparently happens only when it is the final of the operation
+        //I mean, when the operation is like "1.+1" the result does not fails
+        if (cleaned.endsWith('.')){
+            return cleaned + '0'
+        }else if(cleaned.endsWith('x') || cleaned.endsWith('÷')){
+            return cleaned + '1'
+        }else{
+            return cleaned
+        }
+
     }
 
     companion object {
