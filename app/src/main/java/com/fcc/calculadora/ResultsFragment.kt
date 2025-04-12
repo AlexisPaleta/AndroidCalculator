@@ -70,10 +70,13 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     }
 
     fun checkOperation(){
-
+        //mXparser.setEpsilon(1e-20)
+        //mXparser.disableCanonicalRounding()
+        println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
         val cleaned = checkEmptyPoints()
         val checked = checkFinalCharacter(cleaned)
         val formatted = changeFormat(checked)
+        println("Formatted: " + formatted)
         val expression = Expression(formatted)
         val result = expression.calculate()
 
@@ -181,11 +184,11 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
 
         }
 
-        if(result.toString().length>11){//Check if the float result is too large, count all the
+        if(result.toString().length>14){//Check if the float result is too large, count all the
             //characters (including the ".") and if the condition is true then round the number at the
             //decimal that is the limit of the length permitted
             val dividedNumber = result.toString().split('.')//obtain the int part and the decimal part
-            val permittedDecimals = 10 - dividedNumber[0].length//subtraction of 11 - the length of the decimal part
+            val permittedDecimals = 14 - dividedNumber[0].length//subtraction of 14 - the length of the decimal part
             //that is gonna be the quantity of permittedDecimals
             return BigDecimal(result.toString()).setScale((permittedDecimals), RoundingMode.HALF_UP).toString()
         }else{

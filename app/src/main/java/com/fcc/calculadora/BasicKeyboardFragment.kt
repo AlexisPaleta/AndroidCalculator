@@ -141,7 +141,8 @@ class BasicKeyboardFragment : Fragment() {
 
         binding.pointButton.setOnClickListener {
             val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
-            if(!basicNumbersVM.isFloatNumber()){ //Only add the "." when the number was not already a float
+            val currentNumber = basicNumbersVM.getCurrentNumber()
+            if(!basicNumbersVM.isFloatNumber() && !currentNumber.contains('E')){ //Only add the "." when the number was not already a float
                 basicNumbersVM.setFloat(true)
                 if (currentValue == "0") {
                     basicNumbersVM.addDigit()
