@@ -86,7 +86,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
         val cleaned = checkEmptyPoints()
         val checked = checkFinalCharacter(cleaned)
-        val formatted = changeFormat(checked)
+        val filledOut = fillOutParenthesis(checked)
+        val formatted = changeFormat(filledOut)
         println("Formatted: " + formatted)
         val expression = Expression(formatted)
         val result = expression.calculate()
@@ -125,7 +126,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             }
 
             //binding.previousOperationText.text = checked
-            basicNumbersVM.setPreviousOperation(checked)
+            basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(false)
             var numberLength = finalResult.length
@@ -152,7 +153,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
             //binding.previousOperationText.text = checked
-            basicNumbersVM.setPreviousOperation(checked)
+            basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(true)
             var numberLength = finalResult.length - 1//The minus is because there is a "."
@@ -182,6 +183,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         currentOperation = currentOperation.replace(".-",".0-")
         currentOperation = currentOperation.replace(".÷",".0÷")
         currentOperation = currentOperation.replace(".x",".0x")
+        currentOperation = currentOperation.replace(".(",".0(")
 
         return currentOperation
     }
@@ -226,6 +228,27 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }else{
             return cleaned
         }
+
+    }
+
+    fun fillOutParenthesis(str: String):String{
+        var filledOutString = str
+        var leftParenthesisCount = 0
+        var rightParenthesisCount = 0
+        for(character:Char in str){
+            if(character == '('){
+                leftParenthesisCount += 1
+            }else if(character == ')'){
+                rightParenthesisCount +=1
+            }
+        }
+        var neededParenthesis = leftParenthesisCount - rightParenthesisCount //Check if there are any rightParenthesis left to add
+        while (neededParenthesis > 0){
+            filledOutString += ')'
+            neededParenthesis -=1
+        }
+
+        return filledOutString
 
     }
 

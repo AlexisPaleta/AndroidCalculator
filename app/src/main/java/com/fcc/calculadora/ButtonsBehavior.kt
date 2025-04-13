@@ -26,7 +26,9 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if(basicNumbersVM.isNaN()){
             someResetActions()
-            currentValue = "0"
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
         }
         val totalLength = currentValue?.length
         val lastElement = currentValue?.get(totalLength!! - 1)
@@ -52,15 +54,18 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
     fun addOperator(operator: String): String{
         var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if(basicNumbersVM.isNaN()){
-            basicNumbersVM.resetNumberLength()
-            basicNumbersVM.setFloat(false)
-            currentValue = "0"
-            basicNumbersVM.setNaN(false)
-            basicNumbersVM.setCurrentNumber("0")
+            someResetActions()
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
         }
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
+        val notPermittedOperators = listOf("x","÷","+","-")
+        if(operator in notPermittedOperators && lastElement == "("){ //do not permit to add "x" or "÷" immediately after a left parenthesis, "+" or "-" are allowed
+            return currentValue
+        }
         val operators = listOf("+","-","÷","x")
         basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
         basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
@@ -94,9 +99,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
                 basicNumbersVM.setCurrentOperation("0.")
                 basicNumbersVM.setCurrentNumber("+0.")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
-            }else{
-                if(basicNumbersVM.getNumberLength() == 0){//This case is only activated when
-                    //an operator was pressed
+            }else if (lastElement != ')'){ //I won't permit add a "." after a parenthesis
+                if(basicNumbersVM.getNumberLength() == 0){//This case is when an operator was pressed
                     val sign = basicNumbersVM.getCurrentNumber() //Recover the sign (remember that it can be
                     // only a "+" or "-" because of the addOperator method)
                     basicNumbersVM.addDigit()
@@ -158,25 +162,96 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
     }
 
+    private fun checkParenthesis(str: String, currentNumber: String):Boolean{//Function do check if the previousNumber is candidate to use it with the
+        //percentage logic. The percentage button uses (when the most recent operator is "+" or "-") the previous number of the operator
+        //to obtain a certain percentage of the previous number, but with the parenthesis as a part of the current number, a validation
+        //is needed because the operation could be "1(+2", if the user press the percentageButton, the previousNumber after using the "+"
+        //is "1(" so the operation would try to obtain 2% of the previousNumber in other words 2% of "1(" what is obviously a not valid
+        //operation, so in this function I first check if all the parenthesis in the previousNumber are closed and there has to be almost
+        //one digit between two parenthesis because "()" cause a NaN result. If the previous number is not valid the percentageButton
+        //won't do anything
+        var filledOutString = str
+        if(currentNumber.count('(')>0){//If the current number has almost one parenthesis
+            println("swap")
+            basicNumbersVM.setPreviousNumber("_")//"Forcing" to the percentageProcess to take the behavior of only add the '%' symbol
+            //and do not obtain the percentage of a previousNumber
+            return true
+        }
+        //an example of a number with the next behavior (using the isNeededInnerNumber) is "1 + (50(70 + 5" and the percentageButton is pressed, in that case currentNumber
+        //is 5 and the previous is (50(70, the user has the intention to obtain the 5% of 70 so I have to "find it". By the hierarchy I know
+        //that the number that is more and more inner the parenthesis is the number that the user wants to obtain the percentage
+        val leftParenthesisCount = filledOutString.count('(')
+        val rightParenthesisCount = filledOutString.count(')')
+
+        var neededParenthesis = leftParenthesisCount - rightParenthesisCount //Check if there are any rightParenthesis left to add
+        val isNeededInnerNumber = ((neededParenthesis > 0) && leftParenthesisCount>1)
+        while (neededParenthesis > 0){
+            filledOutString += ')'
+            neededParenthesis -=1
+        }
+        println("filledOutString: $filledOutString")
+        basicNumbersVM.setPreviousNumber(filledOutString)
+        if (isNeededInnerNumber){
+            innerNumber(filledOutString)
+        }
+
+        if(!filledOutString.contains("()") || (filledOutString.contains("(-") || filledOutString.contains("(+"))){
+            return true
+        }else{
+            return false //If false is returned that means that the currentOperation is not corrected, it has to be restarted with AC
+            //because
+        }
+
+    }
+
+    private fun innerNumber(str: String){
+        var check = str
+        var indexInnerLeftParenthesis = 0
+        var indexInnerRightParenthesis = 0
+        for((index, character) in str.withIndex()){
+            println("index: $index - character: $character")
+            if(character == '('){
+                indexInnerLeftParenthesis = index
+            }else if(character == ')'){
+                indexInnerRightParenthesis = index
+            }
+        }
+        val innerNumber = str.substring(indexInnerLeftParenthesis, indexInnerRightParenthesis)
+        println("innerNumber: " + innerNumber)
+        basicNumbersVM.setPreviousNumber(innerNumber)
+
+    }
+
     fun percentageFunctionality(): String {
         val actualNumber = basicNumbersVM.getCurrentNumber()
         val currentOperation = basicNumbersVM.getCurrentOperation().value
         val currentNumberLength = actualNumber.length
         val totalLength = basicNumbersVM.getCurrentOperation().value?.length
-        val previousNumber = basicNumbersVM.getPreviousNumber()
+        var previousNumber = basicNumbersVM.getPreviousNumber()
+        println("PreviousNumber = $previousNumber")
         //Check if the current operation wants to obtain the percentage of an specific number
         //In other words, if the user enters 100-1% what the user is trying to say is
         //"100 - (1% * 100)"
         var sign: Char = actualNumber.get(0)
-
+        val notPermittedSymbols = listOf('%','.','(')
         val oneOnly = totalLength!! > currentNumberLength//I need to know if the user is
         //trying to obtain the percentages of a unique number like +0.5% or 10%, if that
         //is the case that has to be in his own condition, and that is not the next line
-        val currentOperator = if(oneOnly) (currentOperation?.get(totalLength!! - (currentNumberLength))) else 'N' //I want to know what is the most recent
+        if((previousNumber == "(") || !checkParenthesis(previousNumber, actualNumber)){
+            println("Not validated")
+            return currentOperation + ""
+        }
+        previousNumber = basicNumbersVM.getPreviousNumber()//It is necessary to call this getter multiple times at the function because
+        //it could change during the checkParenthesis process
+        println("Processed number: $previousNumber")
+        var currentOperator = if(oneOnly) (currentOperation?.get(totalLength!! - (currentNumberLength))) else 'N' //I want to know what is the most recent
         //operator because depending if is a "+" or "-" I do something but if is an "x" or "÷" other process is needed. The oneOnly condition is
         //necessary because if it is false the totalLength!! - (currentNumberLength) operation will throw an exception
+        if (previousNumber == "_"){
+            currentOperator = 'n'
+        }
         println("Actual operator: $currentOperator")
-        if((currentOperation != "0") && (oneOnly) && (currentNumberLength > 1) && (currentOperator in listOf('+','-')) ){//The condition
+        if((currentOperation != "0") && (previousNumber!= "0") && (oneOnly) && (currentNumberLength > 1) && (currentOperator in listOf('+','-')) ){//The condition
             //is true when the operation is like the followings examples: 100-2%, 0.5+2%. That is because
             //when the operator of the operation is a "+" or "-" the user wants to obtain that percentage of the
             //previous number
@@ -184,19 +259,46 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //as a unique number, first I separate the sign to write it before the parenthesis and because I already used the sign
             //of the current number in that position I have to omit it inside the parenthesis
             basicNumbersVM.setCurrentNumber(percentageNumber)
-            basicNumbersVM.resetNumberLength()//I a digit is entered after the ')' I will consider it as a new number, is like the 'x' operator
+            basicNumbersVM.resetNumberLength()//If a digit is entered after the ')' I will consider it as a new number, is like the 'x' operator
             return currentOperation?.dropLast(currentNumberLength) + percentageNumber//I returned the new operation that has to be
             //written on screen, but firstly remove the currentNumber because I am rewriting it with the
             //percentageNumber variable, that's why I use the drop with the currentOperation
-        }else if((currentOperation != "0") && (currentNumberLength > 1) && (currentOperation?.get(totalLength-1) != '%')){
+        }else if((currentOperation != "0")  && (currentNumberLength > 1) && (currentOperation?.get(totalLength-1) !in notPermittedSymbols) && !basicNumbersVM.isNaN()){
+            //The currentNumberLength condition is to avoid add a "%" when there is only a "+" or "-"
+            basicNumbersVM.setCurrentNumber(actualNumber + '%')//TODO !!IMPORTANT This has to be tested, if affects the changeSign button then remove this line
             return currentOperation + '%'
         }
 
         return currentOperation + ""
     }
 
+    fun leftParenthesisFunction(): String{
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        if(basicNumbersVM.isNaN()){
+            someResetActions()
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
+        }
+        if (currentValue == null)
+            return "Error left parenthesis"
+        if(currentValue == "0"){//If the current operation is empty, replace the 0 with the left parenthesis
+            basicNumbersVM.setCurrentNumber("(")
+            return "("
+        }
+        val lastElement = currentValue.get(currentValue.length - 1)
+
+        basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
+        basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
+        //so the length needs to be 0
+        basicNumbersVM.addCharCurrentNumber('(')//The parenthesis will be part of the current number
+        println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+        return currentValue + "("
+
+    }
+
     private fun someResetActions(){
-        basicNumbersVM.resetNumberLength()//Reset current number length because it is only a "0"
+        basicNumbersVM.resetNumberLength()//Reset current number length
         basicNumbersVM.setFloat(false) //The current number is just a "0", it is not a float
         basicNumbersVM.setNaN(false)
         basicNumbersVM.setCurrentNumber("0")
@@ -241,6 +343,16 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         //oldValue pattern and then take all the remaining string, retaking the example with "HelloHiTestingFunction".replaceLast("loHi","1234")
         // the prefix is "He" and the suffix is "TestingFunction"
         return "$prefix$newValue$suffix"//Merging "He" "12345" "TestingFunction"
+    }
+
+    fun String.count(character: Char): Int{
+        var count = 0
+        for(char in this){
+            if(char == character){
+                count += 1
+            }
+        }
+        return count
     }
 
 

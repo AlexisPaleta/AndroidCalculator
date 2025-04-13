@@ -138,7 +138,13 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.percentageFunctionality()
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.leftParenthesisButton.setOnClickListener {
+            val value = buttonsBehavior.leftParenthesisFunction()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

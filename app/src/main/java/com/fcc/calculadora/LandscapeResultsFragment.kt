@@ -50,6 +50,7 @@ class LandscapeResultsFragment : Fragment() {
 
         val currentNumberObserver = Observer<String> { currentOperation ->
             binding.landscapeResultsText.text = currentOperation
+            println("Landscape currentOperation $currentOperation")
             binding.landscapeResultsLayout.post{
                 binding.landscapeResultsLayout.smoothScrollTo(0, binding.landscapeResultsLayout.bottom)
             }
@@ -58,6 +59,7 @@ class LandscapeResultsFragment : Fragment() {
         basicNumbersVM.getCurrentOperation().observe(viewLifecycleOwner, currentNumberObserver)
 
         val previousNumberObserver = Observer<String> { previousOperation ->
+            println("Landscape previousOperation $previousOperation")
             binding.previousLandscapeOperationText.text = previousOperation
         }
 
