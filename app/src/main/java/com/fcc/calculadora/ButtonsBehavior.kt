@@ -71,7 +71,15 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
         //so the length needs to be 0
         //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
-        basicNumbersVM.setPreviousNumber(basicNumbersVM.getCurrentNumber())//Save the previous number
+        if (basicNumbersVM.getCurrentNumber().length>1){ //Without this condition if the user operation is for example "50 +"
+            //and then press the "-", when the "+" was pressed the previousButton was correct, a "+50" but with the pressed "-"
+            //the previous would be "+" because when the "+" was pressed It was assigned as the current number. This is for only don't lose
+            //the real previous number
+            basicNumbersVM.setPreviousNumber(basicNumbersVM.getCurrentNumber())//Save the previous number
+            println("Saved previous number: " + basicNumbersVM.getPreviousNumber())
+        }
+
+
         if(operator == "-"){
             basicNumbersVM.setCurrentNumber("-")//If a sign is added the current number "restarts" and it will
             //be a negative only if the minus operator is pressed, in other case it will be considered
