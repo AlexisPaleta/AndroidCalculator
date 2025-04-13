@@ -27,7 +27,6 @@ class BasicKeyboardFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
     private lateinit var buttonsBehavior: ButtonsBehavior
-    private var currentToast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -25,6 +25,7 @@ class LandscapeKeyboardFragment : Fragment() {
     private var _binding: FragmentLanscapeKeyboardBinding? = null
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
+    private lateinit var buttonsBehavior: ButtonsBehavior
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,7 @@ class LandscapeKeyboardFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         basicNumbersVM = ViewModelProvider(requireActivity()).get(BasicNumbersViewModel::class.java)
+        buttonsBehavior = ButtonsBehavior(basicNumbersVM, requireContext())
     }
 
     override fun onCreateView(
@@ -42,6 +44,100 @@ class LandscapeKeyboardFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentLanscapeKeyboardBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.ACbutton.setOnClickListener {
+            buttonsBehavior.acButtonFunction()
+        }
+
+        binding.zeroButton.setOnClickListener {
+            buttonsBehavior.zeroButtonFunction()
+        }
+
+        binding.oneButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('1')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.twoButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('2')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.threeButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('3')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.fourButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('4')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.fiveButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('5')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.sixButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('6')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.sevenButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('7')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.eightButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('8')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.nineButton.setOnClickListener {
+            val value = buttonsBehavior.addNumber('9')
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.equalButton.setOnClickListener {
+            basicNumbersVM.setDoOperation(true)
+        }
+
+        binding.plusButton.setOnClickListener {
+            val value = buttonsBehavior.addOperator("+")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.minusButton.setOnClickListener {
+            val value = buttonsBehavior.addOperator("-")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.divisionButton.setOnClickListener {
+            val value = buttonsBehavior.addOperator("÷")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.multiplicationButton.setOnClickListener {
+            val value = buttonsBehavior.addOperator("x")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.pointButton.setOnClickListener {
+            buttonsBehavior.pointFunction()
+        }
+
+        binding.changeSignButton.setOnClickListener {
+            buttonsBehavior.changeSignFunction()
+        }
+
+        binding.percentageButton.setOnClickListener {
+            val value = buttonsBehavior.percentageFunctionality()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
     override fun onDestroyView() {
