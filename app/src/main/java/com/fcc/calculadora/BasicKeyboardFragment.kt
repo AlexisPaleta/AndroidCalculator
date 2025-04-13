@@ -148,7 +148,9 @@ class BasicKeyboardFragment : Fragment() {
         binding.pointButton.setOnClickListener {
             val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
             val currentNumber = basicNumbersVM.getCurrentNumber()
-            if(!basicNumbersVM.isFloatNumber() && !currentNumber.contains('E')){ //Only add the "." when the number was not already a float
+            val totalLength = currentValue?.length
+            val lastElement = currentValue?.get(totalLength!! - 1)
+            if(!basicNumbersVM.isFloatNumber() && !currentNumber.contains('E') && (lastElement != '%')){ //Only add the "." when the number was not already a float
                 basicNumbersVM.setFloat(true)
                 if (currentValue == "0") {
                     basicNumbersVM.addDigit()
@@ -209,12 +211,8 @@ class BasicKeyboardFragment : Fragment() {
                     }
                 }
 
-
-
                 if(oldNumber.startsWith("-")){
                     searchNumber2 = oldNumber
-                }else{
-
                 }
                 //val newOperation = basicNumbersVM.getCurrentOperation().value?.dropLast(currentNumberLength) + sign + changedNumber
                 val newOperation = basicNumbersVM.getCurrentOperation().value?.replaceLast(searchNumber2, (sign + changedNumber)) + ""
@@ -235,13 +233,17 @@ class BasicKeyboardFragment : Fragment() {
             basicNumbersVM.setPreviousNumber("0")
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         }
+        val totalLength = currentValue?.length
+        val lastElement = currentValue?.get(totalLength!! - 1)
+
         if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
             basicNumbersVM.addDigit()
             basicNumbersVM.setCurrentNumber("+$number")//If the resultText is showing "0" and the user types a number it will always
             //be positive, if the user press "-" the operation will be "0-" that is the reason
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             return number.toString()
-        }else if (!isMaximumNumberLength()){// check if the current number is not too large
+        }else if (!isMaximumNumberLength() && lastElement != '%'){// check if the current number is not too large and the just behind element
+            //is not a percentage symbol
             basicNumbersVM.addDigit()
             displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
             basicNumbersVM.addCharCurrentNumber(number)
@@ -278,6 +280,7 @@ class BasicKeyboardFragment : Fragment() {
             //as a unique number, first I separate the sign to write it before the parenthesis and because I already used the sign
             //of the current number in that position I have to omit it inside the parenthesis
             basicNumbersVM.setCurrentNumber(percentageNumber)
+            basicNumbersVM.resetNumberLength()//I a digit is entered after the ')' I will consider it as a new number, is like the 'x' operator
             return currentOperation?.dropLast(currentNumberLength) + percentageNumber//I returned the new operation that has to be
             //written on screen, but firstly remove the currentNumber because I am rewriting it with the
             //percentageNumber variable, that's why I use the drop with the currentOperation
@@ -353,10 +356,10 @@ class BasicKeyboardFragment : Fragment() {
         return "$prefix$newValue$suffix"
     }
 
-   // override fun onDestroyView() {
-    //    super.onDestroyView()
-     //   _binding = null
-    //}
+   override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+   }
 
     fun equalButtonPressed(){
 

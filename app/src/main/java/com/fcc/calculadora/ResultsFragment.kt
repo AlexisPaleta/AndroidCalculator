@@ -229,10 +229,10 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
 
     }
 
-    //override fun onDestroyView() {
-     //   super.onDestroyView()
-        //_binding = null
-    //}
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     companion object {
         /**
