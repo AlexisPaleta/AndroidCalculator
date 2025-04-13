@@ -36,7 +36,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        basicNumbersVM = ViewModelProvider(requireParentFragment()).get(BasicNumbersViewModel::class.java)
+        basicNumbersVM = ViewModelProvider(requireActivity()).get(BasicNumbersViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -56,13 +56,21 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             binding.resultsLayout.post{
                 binding.resultsLayout.smoothScrollTo(0, binding.resultsLayout.bottom)
             }
-
         }
 
         basicNumbersVM.getCurrentOperation().observe(viewLifecycleOwner, currentNumberObserver)
 
-        val doOperationObserver = Observer<Boolean> { _ ->
+        val previousNumberObserver = Observer<String> { previousOperation ->
+            println("Basic $previousOperation")
+            binding.previousOperationText.text = previousOperation
+        }
+
+        basicNumbersVM.getPreviousOperation().observe(viewLifecycleOwner, previousNumberObserver)
+
+        val doOperationObserver = Observer<Boolean> { doOperation ->
+
             checkOperation()
+
         }
 
         basicNumbersVM.getDoOperation().observe(viewLifecycleOwner, doOperationObserver)
@@ -70,6 +78,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     }
 
     fun checkOperation(){
+        if(basicNumbersVM.getDoOperation().value == false){ //Only execute when the user press the equalButton
+            return
+        }
         //mXparser.setEpsilon(1e-20)
         //mXparser.disableCanonicalRounding()
         println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
@@ -100,6 +111,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             basicNumbersVM.setNaN(true)
         }
 
+        basicNumbersVM.setDoOperation(false)//This is because the Observer checks the value when the orientation of the device changes
+        //so I want to only execute this method when the user press the equal button
+
         if(isIntFloat){
             val finalResult: String
 
@@ -110,7 +124,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 finalResult = result.toInt().toString()
             }
 
-            binding.previousOperationText.text = checked
+            //binding.previousOperationText.text = checked
+            basicNumbersVM.setPreviousOperation(checked)
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(false)
             var numberLength = finalResult.length
@@ -136,7 +151,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             basicNumbersVM.setNumberLength(numberLength)
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
-            binding.previousOperationText.text = checked
+            //binding.previousOperationText.text = checked
+            basicNumbersVM.setPreviousOperation(checked)
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(true)
             var numberLength = finalResult.length - 1//The minus is because there is a "."
@@ -212,6 +228,11 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }
 
     }
+
+    //override fun onDestroyView() {
+     //   super.onDestroyView()
+        //_binding = null
+    //}
 
     companion object {
         /**

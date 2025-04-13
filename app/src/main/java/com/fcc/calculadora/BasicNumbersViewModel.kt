@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 class BasicNumbersViewModel: ViewModel() {
     private var doOperation: MutableLiveData<Boolean> = MutableLiveData()
     private var currentOperation: MutableLiveData<String> = MutableLiveData("0") //current information in the resultsText view
+    private var previousOperation: MutableLiveData<String> = MutableLiveData("")//current information in the previousOperationText view
     private var numberLength: Int = 0 //Count the length of the current number to limit it, this does not counts the "."
     private var floatNumber: Boolean = false //Boolean to know if the current number is a float
     private var isNaN: Boolean = false
@@ -22,6 +23,14 @@ class BasicNumbersViewModel: ViewModel() {
 
     fun setCurrentOperation(value: String){
         currentOperation.value = value
+    }
+
+    fun getPreviousOperation(): MutableLiveData<String>{
+        return previousOperation
+    }
+
+    fun setPreviousOperation(value: String){
+        previousOperation.value = value
     }
     fun getDoOperation(): MutableLiveData<Boolean>{
         return doOperation

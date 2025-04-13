@@ -34,7 +34,7 @@ class BasicKeyboardFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        basicNumbersVM = ViewModelProvider(requireParentFragment()).get(BasicNumbersViewModel::class.java)
+        basicNumbersVM = ViewModelProvider(requireActivity()).get(BasicNumbersViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -352,6 +352,11 @@ class BasicKeyboardFragment : Fragment() {
         val suffix = substring(lastIndex + oldValue.length)
         return "$prefix$newValue$suffix"
     }
+
+   // override fun onDestroyView() {
+    //    super.onDestroyView()
+     //   _binding = null
+    //}
 
     fun equalButtonPressed(){
 
