@@ -98,6 +98,10 @@ class BasicNumbersViewModel: ViewModel() {
         currentNumber += character
     }
 
+    fun addStrCurrentNumber(str: String){
+        currentNumber += str
+    }
+
     fun getPreviousNumber(): String{
         return previousNumber
     }

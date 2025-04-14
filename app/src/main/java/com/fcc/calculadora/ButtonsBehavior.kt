@@ -69,7 +69,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         val notPermittedOperators = listOf("x","÷","+","-")
-        if(operator in notPermittedOperators && lastElement == "("){ //do not permit to add "x" or "÷" immediately after a left parenthesis, "+" or "-" are allowed
+        if(operator in notPermittedOperators && lastElement == "("){ //do not permit to add an operator immediately after a left parenthesis or other operator
             return currentValue
         }
         val operators = listOf("+","-","÷","x")
@@ -410,18 +410,36 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.addCharCurrentNumber(')')
 
         println("Inside rightParenthesisFunction CURRENT NUMBER: " + basicNumbersVM.getCurrentNumber())
-        outerNumber(basicNumbersVM.getCurrentNumber())
         return currentValue + ")"
     }
 
-    private fun outerNumber(str: String){
-        var check = "(" //Init the String with a left parenthesis, this will encapsulate the outerNumber
-        var indexInnerLeftParenthesis = 0
-        var indexInnerRightParenthesis = 0
-        val leftParenthesisCount = str.count('(')
-        val rightParenthesisCount = str.count(')')
+    fun specificExponentFunction(exponent : Int): String{
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        if(basicNumbersVM.isNaN()){
+            someResetActions()
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
+        }
+        if (currentValue == null)
+            return "ERROR"
+        val lastElement = currentValue.get(currentValue.length - 1).toString()
+        val notPermittedOperators = listOf("x","÷","+","-",'^')
+        if('^' in notPermittedOperators && lastElement == "("){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+            return currentValue
+        }
 
-
+        if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
+            //is not a percentage symbol
+            basicNumbersVM.addDigit()
+            displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
+            basicNumbersVM.addStrCurrentNumber("^($exponent)")
+            println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+            basicNumbersVM.addStrEncapsulatedCurrentNumber("^($exponent)")
+            println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
+            return currentValue + "^($exponent)"
+        }
+        return currentValue
 
     }
 

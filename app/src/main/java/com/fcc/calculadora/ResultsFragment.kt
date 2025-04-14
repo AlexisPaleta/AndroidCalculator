@@ -92,6 +92,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         val expression = Expression(formatted)
         val result = expression.calculate()
 
+        println("Probando: " + Expression("2^2*4").calculate())
+
         //The isFloatNumber() is for only limit the length of the written number,
         // to know if the result is a float another variable is needed.It is necessary to
         //check the result value returned by mXparser.For example if the written operation is 1÷2, the isFloatNumber() function
