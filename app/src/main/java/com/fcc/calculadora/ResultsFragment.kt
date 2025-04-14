@@ -91,7 +91,6 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         println("Formatted: " + formatted)
         val expression = Expression(formatted)
         val result = expression.calculate()
-        println("Probando resukltado: " + Expression("2%((2))").calculate())
 
         //The isFloatNumber() is for only limit the length of the written number,
         // to know if the result is a float another variable is needed.It is necessary to

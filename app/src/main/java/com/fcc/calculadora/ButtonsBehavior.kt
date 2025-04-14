@@ -337,8 +337,6 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         currentToast?.show()
     }
 
-
-
     fun String.replaceLast(oldValue: String, newValue: String): String { //Function used when the changeSignButton was pressed, the
         //function replaces an specific stringPattern for a new one. The function extends String class so the method executes "on" the
         //string that call the function. An example of works is: "HelloHiTestingFunction".replaceLast("lloHi","12345") -> "He12345TestingFunction"
