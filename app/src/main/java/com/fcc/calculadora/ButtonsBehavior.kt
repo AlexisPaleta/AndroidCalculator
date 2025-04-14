@@ -217,12 +217,21 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //and do not obtain the percentage of a previousNumber
             return true
         }
-        //an example of a number with the next behavior (using the isNeededInnerNumber) is "1 + (50(70 + 5" and the percentageButton is pressed, in that case currentNumber
-        //is 5 and the previous is (50(70, the user has the intention to obtain the 5% of 70 so I have to "find it". By the hierarchy I know
-        //that the number that is more and more inner the parenthesis is the number that the user wants to obtain the percentage
+
         val leftParenthesisCount = filledOutString.count('(')
         val rightParenthesisCount = filledOutString.count(')')
 
+        if(rightParenthesisCount>leftParenthesisCount){
+            val difference =  rightParenthesisCount - leftParenthesisCount
+            println("The previousNumber has more rightParenthesis than leftParenthesis, difference: $difference")
+            filledOutString = filledOutString.dropLast(difference)
+            basicNumbersVM.setPreviousNumber(filledOutString)
+            println("New previousNumber: $filledOutString")
+            return true
+        }
+        //an example of a number with the next behavior (using the isNeededInnerNumber) is "1 + (50(70 + 5" and the percentageButton is pressed, in that case currentNumber
+        //is 5 and the previous is (50(70, the user has the intention to obtain the 5% of 70 so I have to "find it". By the hierarchy I know
+        //that the number that is more and more inner the parenthesis is the number that the user wants to obtain the percentage
         var neededParenthesis = leftParenthesisCount - rightParenthesisCount //Check if there are any rightParenthesis left to add
         val isNeededInnerNumber = ((neededParenthesis > 0) && leftParenthesisCount>0)
         while (neededParenthesis > 0){
@@ -236,9 +245,9 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
 
         if(!filledOutString.contains("()") || (filledOutString.contains("(-") || filledOutString.contains("(+"))){
-            return true
+            return true //Check if the conditions are correct, maybe they need readjustment
         }else{
-            return false //If false is returned that means that the currentOperation is not corrected, it has to be restarted with AC
+            return false //If false is returned that means that the currentOperation is not correct, it has to be restarted with AC
             //because
         }
 
