@@ -192,7 +192,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val rightParenthesisCount = filledOutString.count(')')
 
         var neededParenthesis = leftParenthesisCount - rightParenthesisCount //Check if there are any rightParenthesis left to add
-        val isNeededInnerNumber = ((neededParenthesis > 0) && leftParenthesisCount>1)
+        val isNeededInnerNumber = ((neededParenthesis > 0) && leftParenthesisCount>0)
         while (neededParenthesis > 0){
             filledOutString += ')'
             neededParenthesis -=1
@@ -219,11 +219,12 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         for((index, character) in str.withIndex()){
             println("index: $index - character: $character")
             if(character == '('){
-                indexInnerLeftParenthesis = index
-            }else if(character == ')'){
+                indexInnerLeftParenthesis = index + 1
+            }else if(character == ')' && indexInnerRightParenthesis == 0){
                 indexInnerRightParenthesis = index
             }
         }
+
         val innerNumber = str.substring(indexInnerLeftParenthesis, indexInnerRightParenthesis)
         println("innerNumber: " + innerNumber)
         basicNumbersVM.setPreviousNumber(innerNumber)
