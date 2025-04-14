@@ -42,46 +42,34 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/mcButton"
+                android:id="@+id/secoNDButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
-                android:text="@string/mc"
+                android:text="@string/secoND"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/PiButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/pi"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/mPlusButton"
+                android:id="@+id/lnButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
-                android:text="@string/mPlus"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/mMinusButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/mMinus"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/mRButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/mr"
+                android:text="@string/ln"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -132,16 +120,6 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/secoNDButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/secoND"
-                android:textSize="20sp" />
-
-            <Button
                 android:id="@+id/powerTwoButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -175,16 +153,6 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/eXButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/ex"
-                android:textSize="20sp" />
-
-            <Button
                 android:id="@+id/tenXButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -192,6 +160,16 @@
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
                 android:text="@string/tenX"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/eXButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button"
+                android:text="@string/ex"
                 android:textSize="20sp" />
 
             <Button
@@ -283,16 +261,6 @@
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/lnButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/ln"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/logButton"
@@ -407,17 +375,6 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/EEButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/EE"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <Button
                 android:id="@+id/oneButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -502,17 +459,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
                 android:text="@string/tanH"
-                android:textAllCaps="false"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/PiButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_button"
-                android:text="@string/pi"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
