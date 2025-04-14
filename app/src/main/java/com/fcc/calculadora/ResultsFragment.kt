@@ -185,6 +185,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         currentOperation = currentOperation.replace(".x",".0x")
         currentOperation = currentOperation.replace(".(",".0(")
         currentOperation = currentOperation.replace("%(","%x(")
+        currentOperation = currentOperation.replace(".)",".0)")
         return currentOperation
     }
 
