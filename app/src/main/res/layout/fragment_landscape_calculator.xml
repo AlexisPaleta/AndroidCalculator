@@ -11,24 +11,27 @@
         android:id="@+id/containerResultsLandscape"
         android:name="com.fcc.calculadora.LandscapeResultsFragment"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="110dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintEnd_toEndOf="@+id/containerKeyboardLandscape"
         app:layout_constraintStart_toStartOf="@+id/containerKeyboardLandscape"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
         tools:layout="@layout/fragment_landscape_results" />
+
+
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/containerKeyboardLandscape"
-        android:name="com.fcc.calculadora.LanscapeKeyboardFragment"
+        android:name="com.fcc.calculadora.LandscapeKeyboardFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/containerResultsLandscape"
         tools:layout="@layout/fragment_lanscape_keyboard" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

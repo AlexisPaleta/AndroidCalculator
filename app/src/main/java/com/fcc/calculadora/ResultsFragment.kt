@@ -36,7 +36,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        basicNumbersVM = ViewModelProvider(requireParentFragment()).get(BasicNumbersViewModel::class.java)
+        basicNumbersVM = ViewModelProvider(requireActivity()).get(BasicNumbersViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -56,13 +56,21 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             binding.resultsLayout.post{
                 binding.resultsLayout.smoothScrollTo(0, binding.resultsLayout.bottom)
             }
-
         }
 
         basicNumbersVM.getCurrentOperation().observe(viewLifecycleOwner, currentNumberObserver)
 
-        val doOperationObserver = Observer<Boolean> { _ ->
+        val previousNumberObserver = Observer<String> { previousOperation ->
+            println("Basic $previousOperation")
+            binding.previousOperationText.text = previousOperation
+        }
+
+        basicNumbersVM.getPreviousOperation().observe(viewLifecycleOwner, previousNumberObserver)
+
+        val doOperationObserver = Observer<Boolean> { doOperation ->
+
             checkOperation()
+
         }
 
         basicNumbersVM.getDoOperation().observe(viewLifecycleOwner, doOperationObserver)
@@ -70,12 +78,16 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
     }
 
     fun checkOperation(){
+        if(basicNumbersVM.getDoOperation().value == false){ //Only execute when the user press the equalButton
+            return
+        }
         //mXparser.setEpsilon(1e-20)
         //mXparser.disableCanonicalRounding()
         println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
         val cleaned = checkEmptyPoints()
         val checked = checkFinalCharacter(cleaned)
-        val formatted = changeFormat(checked)
+        val filledOut = fillOutParenthesis(checked)
+        val formatted = changeFormat(filledOut)
         println("Formatted: " + formatted)
         val expression = Expression(formatted)
         val result = expression.calculate()
@@ -100,6 +112,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             basicNumbersVM.setNaN(true)
         }
 
+        basicNumbersVM.setDoOperation(false)//This is because the Observer checks the value when the orientation of the device changes
+        //so I want to only execute this method when the user press the equal button
+
         if(isIntFloat){
             val finalResult: String
 
@@ -110,7 +125,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 finalResult = result.toInt().toString()
             }
 
-            binding.previousOperationText.text = checked
+            //binding.previousOperationText.text = checked
+            basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(false)
             var numberLength = finalResult.length
@@ -136,7 +152,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             basicNumbersVM.setNumberLength(numberLength)
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
-            binding.previousOperationText.text = checked
+            //binding.previousOperationText.text = checked
+            basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
             basicNumbersVM.setFloat(true)
             var numberLength = finalResult.length - 1//The minus is because there is a "."
@@ -166,7 +183,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         currentOperation = currentOperation.replace(".-",".0-")
         currentOperation = currentOperation.replace(".÷",".0÷")
         currentOperation = currentOperation.replace(".x",".0x")
-
+        currentOperation = currentOperation.replace(".(",".0(")
+        currentOperation = currentOperation.replace("%(","%x(")
+        currentOperation = currentOperation.replace(".)",".0)")
         return currentOperation
     }
 
@@ -211,6 +230,32 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             return cleaned
         }
 
+    }
+
+    fun fillOutParenthesis(str: String):String{
+        var filledOutString = str
+        var leftParenthesisCount = 0
+        var rightParenthesisCount = 0
+        for(character:Char in str){
+            if(character == '('){
+                leftParenthesisCount += 1
+            }else if(character == ')'){
+                rightParenthesisCount +=1
+            }
+        }
+        var neededParenthesis = leftParenthesisCount - rightParenthesisCount //Check if there are any rightParenthesis left to add
+        while (neededParenthesis > 0){
+            filledOutString += ')'
+            neededParenthesis -=1
+        }
+
+        return filledOutString
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
