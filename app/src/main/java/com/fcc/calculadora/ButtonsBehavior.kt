@@ -179,7 +179,10 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         //one digit between two parenthesis because "()" cause a NaN result. If the previous number is not valid the percentageButton
         //won't do anything
         var filledOutString = str
-        if(currentNumber.count('(')>0){//If the current number has almost one parenthesis
+        if(currentNumber.count('(')>0){//If the current number has almost one parenthesis, this happens only when the user
+            //is typing something like "1 + 2(4" and then press the '%' Button, maybe the user wants to type 4%x20 so that's the reason
+            //to have this condition. There isn't problem with "1 + 2(4 +" and then the '%' Button because the current number in that case
+            //will be +4, so the percentage will be of the 4, the condition don't enter
             println("swap")
             basicNumbersVM.setPreviousNumber("_")//"Forcing" to the percentageProcess to take the behavior of only add the '%' symbol
             //and do not obtain the percentage of a previousNumber
@@ -200,7 +203,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         println("filledOutString: $filledOutString")
         basicNumbersVM.setPreviousNumber(filledOutString)
         if (isNeededInnerNumber){
-            innerNumber(filledOutString)
+            innerNumber(filledOutString, leftParenthesisCount, rightParenthesisCount)
         }
 
         if(!filledOutString.contains("()") || (filledOutString.contains("(-") || filledOutString.contains("(+"))){
@@ -212,21 +215,50 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
     }
 
-    private fun innerNumber(str: String){
+    private fun innerNumber(str: String, leftCount: Int, rightCount: Int){
         var check = str
+        var consideredLeftParenthesis = leftCount - rightCount - 1
+        var consideredRightParenthesis = leftCount - rightCount - 1
+        if (rightCount == 0){//If none leftParenthesis were closed on the original operation then I have to take the first rightParenthesis
+            //to now the inner number
+            consideredRightParenthesis = 0
+        }
+        println("consideredLeftParenthesis :" + consideredLeftParenthesis)
+        println("consideredRightParenthesis :" + consideredRightParenthesis)
         var indexInnerLeftParenthesis = 0
         var indexInnerRightParenthesis = 0
         for((index, character) in str.withIndex()){
             println("index: $index - character: $character")
-            if(character == '('){
-                indexInnerLeftParenthesis = index + 1
-            }else if(character == ')' && indexInnerRightParenthesis == 0){
-                indexInnerRightParenthesis = index
+            if(character == '(' ){
+                if(consideredLeftParenthesis == 0){
+                    indexInnerLeftParenthesis = index + 1
+                }
+                consideredLeftParenthesis -= 1
+
+            }else if(character == ')'){
+                if(consideredRightParenthesis == 0){
+                    indexInnerRightParenthesis = index
+                }
+                consideredRightParenthesis -=1
             }
         }
 
-        val innerNumber = str.substring(indexInnerLeftParenthesis, indexInnerRightParenthesis)
+        var innerNumber = str.substring(indexInnerLeftParenthesis, indexInnerRightParenthesis)
         println("innerNumber: " + innerNumber)
+        //The next check is because if the operation is like "(50 + (20(50) +6" and then the '%' Button is pressed the previousNumber
+        //will be (20(50), the checkParenthesis function will add the remaining Parenthesis so the leftCount - rightCount - 1 will be zero
+        //that is ok for the indexInnerLeftParenthesis index but for the indexInnerRightParenthesis will consider the first ')' parenthesis as
+        //the limit of the number, so the substring will omit it and the innerNumber will be "20(50", the percentage function will take that as
+        //the previous number and because of the parenthesis of "20(50" is not closed the percentage value will not also be closed. To ensure that
+        //the collected innerNumber has all its parenthesis closed the next loop adds the necessary ones
+        val recountLeft = innerNumber.count('(')
+        val recountRight = innerNumber.count(')')
+        var neededParenthesis = recountLeft - recountRight
+        while (neededParenthesis > 0){
+            innerNumber += ')'
+            neededParenthesis -=1
+        }
+        println("innerNumber revised: " + innerNumber)
         basicNumbersVM.setPreviousNumber(innerNumber)
 
     }
@@ -292,7 +324,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (currentValue == null)
             return "Error left parenthesis"
         if(currentValue == "0"){//If the current operation is empty, replace the 0 with the left parenthesis
-            basicNumbersVM.setCurrentNumber("(")
+            basicNumbersVM.setCurrentNumber("+(")
             return "("
         }
         val lastElement = currentValue.get(currentValue.length - 1)
@@ -303,6 +335,30 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.addCharCurrentNumber('(')//The parenthesis will be part of the current number
         println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         return currentValue + "("
+
+    }
+
+    fun rightParenthesis(): String{
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        val lastElement = currentValue?.get(currentValue.length - 1)
+        val notPermitedSymbols = listOf('x','÷','-','+','(')
+        if(currentValue == "0" || lastElement in notPermitedSymbols){
+            return currentValue + ""
+        }
+        basicNumbersVM.addCharCurrentNumber(')')
+        println("Inside rightParenthesisFunction CURRENT NUMBER: " + basicNumbersVM.getCurrentNumber())
+        outerNumber(basicNumbersVM.getCurrentNumber())
+        return currentValue + ")"
+    }
+
+    private fun outerNumber(str: String){
+        var check = "(" //Init the String with a left parenthesis, this will encapsulate the outerNumber
+        var indexInnerLeftParenthesis = 0
+        var indexInnerRightParenthesis = 0
+        val leftParenthesisCount = str.count('(')
+        val rightParenthesisCount = str.count(')')
+
+
 
     }
 

@@ -143,6 +143,11 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.leftParenthesisFunction()
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.rightParenthesisButton.setOnClickListener {
+            val value = buttonsBehavior.rightParenthesis()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 

@@ -17,6 +17,19 @@ class BasicNumbersViewModel: ViewModel() {
     //"-" or "+" is the previous operator. It is necessary to store the previous number at a different variable because when an
     //operator is pressed the current number is just the sign so I will not be able to know of what number I have to obtain
     //the percentage
+    private var encapsulatedCurrentNumber = "0"//This variable is for the parenthesis logic and "x" and "÷" operators to a correct use on the percentage function.
+    //If the user operation is "(5(9)) + 5" and then press the percentage button the operation will be (5(9)) + (5%x(5(9))), that is because the parenthesis don't reset
+    //the currentNumber status. But when I press an operator ("+","-") the currentNumber and the previousNumber are updated (the previous until a digit is entered after the sign)
+    //and that is OK if all the parenthesis are not closed or there are not parenthesis at all, but if all the parenthesis are correctly closed like (56(7 + 8 x 2))
+    // or the number is something like "5x7÷9" then I want to consider that whole number as unique
+    //
+    private var sameNumber = 0// This variable is the complement of the encapsulatedCurrentNumber, when a left parenthesis is opened with his
+    //button, this variable add 1 to its value, so all the numbers after that activation will be part of the encapsulatedCurrentNumber, the variable will increment
+    //its value with each leftParenthesis Button press and it will be decreased when the rightParenthesisButton is pressed. The add operator function will check
+    //the value and if a "x" or "÷" are added to the operation they will always be added to the encapsulatedCurrentNumber. The "+" and "-" need to check
+    //the value of sameNumber and if it is zero they will reset the encapsulatedCurrentNumber and add the first element with his sign, if it is not zero then
+    //the "+" and "-" will be part of the encapsulatedCurrentNumber. The percentageButton will check the length of encapsulatedCurrentNumber and if is more than
+    //maybe 1 then the currentNumber will be replaced with encapsulatedCurrentNumber.
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
