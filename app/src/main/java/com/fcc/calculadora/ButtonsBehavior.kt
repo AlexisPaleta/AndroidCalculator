@@ -218,11 +218,25 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return true
         }
 
-        val leftParenthesisCount = filledOutString.count('(')
-        val rightParenthesisCount = filledOutString.count(')')
+        var leftParenthesisCount = filledOutString.count('(')
+        var rightParenthesisCount = filledOutString.count(')')
+        var difference =  rightParenthesisCount - leftParenthesisCount
+
+        if (str.contains('(') && str.get(0)!='(' && difference==0){
+            for ((index, character) in str.withIndex()){
+                if(character == '('){
+                    filledOutString = str.substring(index,str.length)
+                    println("Taking from the first left parenthesis: filledOutString = $filledOutString")
+                    break;
+                }
+            }
+        }
+
+        leftParenthesisCount = filledOutString.count('(')
+        rightParenthesisCount = filledOutString.count(')')
 
         if(rightParenthesisCount>leftParenthesisCount){
-            val difference =  rightParenthesisCount - leftParenthesisCount
+            difference =  rightParenthesisCount - leftParenthesisCount
             println("The previousNumber has more rightParenthesis than leftParenthesis, difference: $difference")
             filledOutString = filledOutString.dropLast(difference)
             basicNumbersVM.setPreviousNumber(filledOutString)
@@ -253,6 +267,23 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
     }
 
+    fun correctInner(str: String, difference: Int): String{
+        var check = str
+        check = str.dropLast(difference-1)
+        var position = 0
+        var leftCount = difference
+
+        for((index, character) in check.withIndex()){
+            if(character == '(' ){
+                if(leftCount == 0){
+                    position = index
+                }
+                leftCount -= 1
+            }
+        }
+        return check.substring(position,check.length)
+    }
+
     private fun innerNumber(str: String, leftCount: Int, rightCount: Int){
         var check = str
         var consideredLeftParenthesis = leftCount - rightCount - 1
@@ -265,9 +296,23 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
         println("consideredLeftParenthesis :" + consideredLeftParenthesis)
         println("consideredRightParenthesis :" + consideredRightParenthesis)
+
+        if((consideredLeftParenthesis == consideredRightParenthesis)){//This function need to be carefully tested
+            check = correctInner(str, leftCount - rightCount)
+            println("Check for innerNumber is needed")
+            if(check != str){
+                println("Correct inner ===: $check")
+                consideredLeftParenthesis = 0
+                consideredRightParenthesis = -1 //The string will take from the 0 index to the final
+            }else{
+                check = str
+                println("Check complete, no needed changes")
+            }
+        }
+
         var indexInnerLeftParenthesis = 0
-        var indexInnerRightParenthesis = 0
-        for((index, character) in str.withIndex()){
+        var indexInnerRightParenthesis = check.length
+        for((index, character) in check.withIndex()){
             println("index: $index - character: $character")
             if(character == '(' ){
                 if(consideredLeftParenthesis == 0){
@@ -283,7 +328,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             }
         }
 
-        var innerNumber = str.substring(indexInnerLeftParenthesis, indexInnerRightParenthesis)
+        var innerNumber = check.substring(indexInnerLeftParenthesis, indexInnerRightParenthesis)
         println("innerNumber: " + innerNumber)
         //The next check is because if the operation is like "(50 + (20(50) +6" and then the '%' Button is pressed the previousNumber
         //will be (20(50), the checkParenthesis function will add the remaining Parenthesis so the leftCount - rightCount - 1 will be zero
@@ -294,11 +339,18 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val recountLeft = innerNumber.count('(')
         val recountRight = innerNumber.count(')')
         var neededParenthesisRight = recountLeft - recountRight
+        var neededParenthesisLeft = recountRight - recountLeft
 
         while (neededParenthesisRight > 0){
             innerNumber += ')'
             neededParenthesisRight -=1
         }
+
+        while (neededParenthesisLeft > 0){
+            innerNumber = '(' + innerNumber
+            neededParenthesisLeft -=1
+        }
+
         println("innerNumber revised: " + innerNumber)
         basicNumbersVM.setPreviousNumber(innerNumber)
 
