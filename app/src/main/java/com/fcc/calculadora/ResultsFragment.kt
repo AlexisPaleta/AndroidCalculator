@@ -92,8 +92,6 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         val expression = Expression(formatted)
         val result = expression.calculate()
 
-        println("Probando: " + Expression("2^2*4").calculate())
-
         //The isFloatNumber() is for only limit the length of the written number,
         // to know if the result is a float another variable is needed.It is necessary to
         //check the result value returned by mXparser.For example if the written operation is 1÷2, the isFloatNumber() function
@@ -130,6 +128,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             //binding.previousOperationText.text = checked
             basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setOnlyWritePercentage(false)
+            basicNumbersVM.setEncapsulatedCurrentNumber(finalResult)
+            basicNumbersVM.setReplacePreviousNumberForEncapsulated(false)
             basicNumbersVM.setFloat(false)
             var numberLength = finalResult.length
             if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
@@ -141,6 +142,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 basicNumbersVM.setCurrentNumber("+$finalResult")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
+            println("Encapsulated Current number in result: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
 
             if(finalResult.contains('E')){
                 //I want to know the length of the result because when after it appears on the
@@ -157,6 +159,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             //binding.previousOperationText.text = checked
             basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setEncapsulatedCurrentNumber(finalResult)
+            basicNumbersVM.setOnlyWritePercentage(false)
+            basicNumbersVM.setReplacePreviousNumberForEncapsulated(false)
             basicNumbersVM.setFloat(true)
             var numberLength = finalResult.length - 1//The minus is because there is a "."
             if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
@@ -168,7 +173,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 basicNumbersVM.setCurrentNumber("+$finalResult")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
-
+            println("Encapsulated Current number in result: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             basicNumbersVM.setNumberLength(numberLength)
 
 

@@ -69,7 +69,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         val notPermittedOperators = listOf("x","÷","+","-")
-        if(operator in notPermittedOperators && lastElement == "("){ //do not permit to add an operator immediately after a left parenthesis or other operator
+        if(operator in notPermittedOperators && lastElement == "(" || basicNumbersVM.getCurrentNumber() == "0"){ //do not permit to add an operator immediately after a left parenthesis or other operator
             return currentValue
         }
         val operators = listOf("+","-","÷","x")
@@ -112,8 +112,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return currentValue.dropLast(1) + operator //Drops last character and replaces with the new operator
         }else{
             basicNumbersVM.addStrEncapsulatedCurrentNumber(operator)
-            if(basicNumbersVM.getOpenParenthesis() == 0 && !basicNumbersVM.getReplacePreviousNumberForEncapsulated()){
-                basicNumbersVM.setEncapsulatedCurrentNumber("")//All the parenthesis are closed, a new encapsulated starts
+            if(basicNumbersVM.getOpenParenthesis() == 0 && !basicNumbersVM.getReplacePreviousNumberForEncapsulated() && operator in listOf("+","-")){
+                basicNumbersVM.setEncapsulatedCurrentNumber(operator)//All the parenthesis are closed, a new encapsulated starts
             }
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return currentValue + operator
@@ -195,6 +195,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             val newOperation = basicNumbersVM.getCurrentOperation().value?.replaceLast(searchNumber2, (sign + changedNumber)) + ""
             basicNumbersVM.setCurrentOperation(newOperation)
             val changedEncapsulated = basicNumbersVM.getEncapsulatedCurrentNumber().replaceLast(searchNumber2, (sign + changedNumber))
+            println("Encapsulated Current number BEFORE: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             basicNumbersVM.setEncapsulatedCurrentNumber(changedEncapsulated)
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
 
@@ -495,8 +496,9 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
-        val notPermittedOperators = listOf("x","÷","+","-",'^','.')
-        if('^' in notPermittedOperators && lastElement == "("){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+        println("Last element specific exponent: $lastElement")
+        val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
+        if(lastElement in notPermittedOperators){ //do not permit to add an '^' immediately after a left parenthesis or other operator
             return currentValue
         }
 
