@@ -31,6 +31,8 @@ class BasicNumbersViewModel: ViewModel() {
     //the "+" and "-" will be part of the encapsulatedCurrentNumber. The percentageButton will check the length of encapsulatedCurrentNumber and if is more than
     //maybe 1 then the previous will be replaced with encapsulatedCurrentNumber. TODO !!IMPORTANT firstly only the parenthesis logic will be implemented
     private var replacePreviousNumberForEncapsulated = false//Variable to know if the swap between the encapsulatedCurrentNumber with previous is necessary
+    private var onlyWritePercentage = false//After some operations is better to only write the percentageOperator instead of the previousNumber function, after 'complex' operations like
+    //exponents, roots, log, e, sen, etc.
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -152,4 +154,12 @@ class BasicNumbersViewModel: ViewModel() {
     fun setReplacePreviousNumberForEncapsulated(value: Boolean){
         replacePreviousNumberForEncapsulated = value
     }
+
+    fun getOnlyWritePercentage(): Boolean{
+        return onlyWritePercentage
+    }
+    fun setOnlyWritePercentage(value: Boolean){
+        onlyWritePercentage = value
+    }
+
 }

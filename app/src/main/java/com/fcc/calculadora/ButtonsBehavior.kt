@@ -76,6 +76,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
         basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
         //so the length needs to be 0
+        basicNumbersVM.setOnlyWritePercentage(false)//The percentage function can work with the previousNumber logic (if the conditions are the correct ones to permit it)
         //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
         if (basicNumbersVM.getCurrentNumber().length>1){ //Without this condition if the user operation is for example "50 +"
             //and then press the "-", when the "+" was pressed the previousButton was correct, a "+50" but with the pressed "-"
@@ -102,7 +103,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
         println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         if(lastElement in operators){
-            basicNumbersVM.replaceLastCharEncapsulatedCurrentNumber("operator")
+            basicNumbersVM.replaceLastCharEncapsulatedCurrentNumber(operator)
             if(basicNumbersVM.getOpenParenthesis() == 0){
                 basicNumbersVM.setEncapsulatedCurrentNumber("")//All the parenthesis are closed, a new encapsulated starts
             }
@@ -195,6 +196,10 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             val changedEncapsulated = basicNumbersVM.getEncapsulatedCurrentNumber().replaceLast(searchNumber2, (sign + changedNumber))
             basicNumbersVM.setEncapsulatedCurrentNumber(changedEncapsulated)
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+
+            if(basicNumbersVM.getEncapsulatedCurrentNumber() == "${searchNumber2.drop(1)}"){
+                basicNumbersVM.setEncapsulatedCurrentNumber(sign + changedNumber)
+            }
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
         }
     }
@@ -208,7 +213,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         //one digit between two parenthesis because "()" cause a NaN result. If the previous number is not valid the percentageButton
         //won't do anything
         var filledOutString = str
-        if(currentNumber.count('(')>0){//If the current number has almost one parenthesis, this happens only when the user
+        if(currentNumber.count('(')>0 || basicNumbersVM.getOnlyWritePercentage()){//If the current number has almost one parenthesis, this happens only when the user
             //is typing something like "1 + 2(4" and then press the '%' Button, maybe the user wants to type 4%x20 so that's the reason
             //to have this condition. There isn't problem with "1 + 2(4 +" and then the '%' Button because the current number in that case
             //will be +4, so the percentage will be of the 4, the condition don't enter
@@ -227,21 +232,37 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
                 if(character == '('){
                     filledOutString = str.substring(index,str.length)
                     println("Taking from the first left parenthesis: filledOutString = $filledOutString")
+
+                    val specialElements = listOf("^", "tan","sin","cos","ln")
+                    for (i in specialElements){
+                        if (filledOutString.contains(i)){
+                            filledOutString += ')'
+                            println("Se cumple")
+                            break;
+                        }
+                    }
+
                     break;
                 }
             }
         }
 
+
         leftParenthesisCount = filledOutString.count('(')
         rightParenthesisCount = filledOutString.count(')')
 
-        if(rightParenthesisCount>leftParenthesisCount){
+        if(rightParenthesisCount>leftParenthesisCount && filledOutString.startsWith('(')){
             difference =  rightParenthesisCount - leftParenthesisCount
             println("The previousNumber has more rightParenthesis than leftParenthesis, difference: $difference")
             filledOutString = filledOutString.dropLast(difference)
             basicNumbersVM.setPreviousNumber(filledOutString)
             println("New previousNumber: $filledOutString")
             return true
+        }else if (rightParenthesisCount>leftParenthesisCount ){
+            println("checking again: " + correctInner(filledOutString, 0))
+            filledOutString = correctInner(filledOutString, 0)
+            leftParenthesisCount = filledOutString.count('(')
+            rightParenthesisCount = filledOutString.count(')')
         }
         //an example of a number with the next behavior (using the isNeededInnerNumber) is "1 + (50(70 + 5" and the percentageButton is pressed, in that case currentNumber
         //is 5 and the previous is (50(70, the user has the intention to obtain the 5% of 70 so I have to "find it". By the hierarchy I know
@@ -269,7 +290,9 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
     fun correctInner(str: String, difference: Int): String{
         var check = str
-        check = str.dropLast(difference-1)
+        if(difference>1){
+            check = str.dropLast(difference-1)
+        }
         var position = 0
         var leftCount = difference
 
@@ -422,7 +445,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (currentValue == null)
             return "Error left parenthesis"
         basicNumbersVM.addOpenParenthesis()//add 1 to the openParenthesis
-        basicNumbersVM.setReplacePreviousNumberForEncapsulated(true)
+        basicNumbersVM.setOnlyWritePercentage(true)//after a parenthesis the percentage operation can use the previousNumber logic
+        basicNumbersVM.setReplacePreviousNumberForEncapsulated(false)
         if(currentValue == "0"){//If the current operation is empty, replace the 0 with the left parenthesis
             basicNumbersVM.setCurrentNumber("+(")
             basicNumbersVM.setEncapsulatedCurrentNumber("(")
@@ -451,7 +475,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             basicNumbersVM.addCharEncapsulatedCurrentNumber(')')
             basicNumbersVM.subOpenParenthesis()//1 parenthesis was closed
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
-            if(basicNumbersVM.getOpenParenthesis() == 0 && basicNumbersVM.getReplacePreviousNumberForEncapsulated()){//If all the parenthesis were closed then I will consider the entire
+            if(basicNumbersVM.getOpenParenthesis() == 0 ){//If all the parenthesis were closed then I will consider the entire
                 //encapsulated number as the previousNumber
                 //basicNumbersVM.setPreviousNumber(basicNumbersVM.getEncapsulatedCurrentNumber())
                 //basicNumbersVM.setReplacePreviousNumberForEncapsulated(false)//All the parenthesis were closed, until a left is pressed
@@ -476,7 +500,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
-        val notPermittedOperators = listOf("x","÷","+","-",'^')
+        val notPermittedOperators = listOf("x","÷","+","-",'^','.')
         if('^' in notPermittedOperators && lastElement == "("){ //do not permit to add an '^' immediately after a left parenthesis or other operator
             return currentValue
         }
@@ -484,6 +508,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
             //is not a percentage symbol
             basicNumbersVM.addDigit()
+            basicNumbersVM.setOnlyWritePercentage(true)
             displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
             basicNumbersVM.addStrCurrentNumber("^($exponent)")
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
@@ -503,6 +528,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.setPreviousNumber("0")
         basicNumbersVM.setEncapsulatedCurrentNumber("")
         basicNumbersVM.setOpenParenthesis(0)
+        basicNumbersVM.setOnlyWritePercentage(false)
         println("Current number: ${basicNumbersVM.getCurrentNumber()}")
     }
 
