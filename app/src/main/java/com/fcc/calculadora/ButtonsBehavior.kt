@@ -229,24 +229,15 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         var rightParenthesisCount = filledOutString.count(')')
         var difference =  rightParenthesisCount - leftParenthesisCount
 
-        if (str.contains('(') && str.get(0)!='(' && difference==0){
-            for ((index, character) in str.withIndex()){
-                if(character == '('){
-                    filledOutString = str.substring(index,str.length)
-                    println("Taking from the first left parenthesis: filledOutString = $filledOutString")
+        //if (str.contains('(') && str.get(0)!='(' && difference == 0){
+            //for ((index, character) in str.withIndex()){
+                //if(character == '('){
+                   // filledOutString = str.substring(index,str.length)
+                   // println("Taking from the first left parenthesis: filledOutString = $filledOutString")
 
-                    val specialElements = listOf("^", "tan","sin","cos","ln")
-                    for (i in specialElements){
-                        if (filledOutString.contains(i)){
-                            filledOutString += ')'
-                            println("Se cumple")
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+               // } TODO UNCOMMENT IF THE LEFT PARENTHESIS ALLOWS THE PREVIOUS NUMBER LOGIC, IN OTHER CASE KEEP COMMENTED
+            //}
+        //}
 
         leftParenthesisCount = filledOutString.count('(')
         rightParenthesisCount = filledOutString.count(')')
@@ -259,6 +250,9 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             println("New previousNumber: $filledOutString")
             return true
         }else if (rightParenthesisCount>leftParenthesisCount ){
+            if (!filledOutString.startsWith('(')){
+                filledOutString = '(' + filledOutString
+            }
             println("checking again: " + correctInner(filledOutString, 0))
             filledOutString = correctInner(filledOutString, 0)
             leftParenthesisCount = filledOutString.count('(')
@@ -445,7 +439,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (currentValue == null)
             return "Error left parenthesis"
         basicNumbersVM.addOpenParenthesis()//add 1 to the openParenthesis
-        basicNumbersVM.setOnlyWritePercentage(false)//after a parenthesis the percentage operation can use the previousNumber logic
+        basicNumbersVM.setOnlyWritePercentage(true)//after a parenthesis the percentage operation can use the previousNumber logic, but for the moment the only
+        //way is outside of parenthesis or using the whole encapsulated number, for that reason the assigned value is 'true'
         basicNumbersVM.setReplacePreviousNumberForEncapsulated(true)
         if(currentValue == "0"){//If the current operation is empty, replace the 0 with the left parenthesis
             basicNumbersVM.setCurrentNumber("+(")
