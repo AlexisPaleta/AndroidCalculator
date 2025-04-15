@@ -131,7 +131,9 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
                 basicNumbersVM.addDigit()
                 basicNumbersVM.setCurrentOperation("0.")
                 basicNumbersVM.setCurrentNumber("+0.")
+                basicNumbersVM.setEncapsulatedCurrentNumber("0.")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
+                println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             }else if (lastElement != ')'){ //I won't permit add a "." after a parenthesis
                 if(basicNumbersVM.getNumberLength() == 0){//This case is when an operator was pressed
                     val sign = basicNumbersVM.getCurrentNumber() //Recover the sign (remember that it can be
@@ -498,7 +500,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         println("Last element specific exponent: $lastElement")
         val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
-        if(lastElement in notPermittedOperators){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+        if(lastElement in notPermittedOperators || currentValue == "0"){ //do not permit to add an '^' immediately after a left parenthesis or other operator
             return currentValue
         }
 
@@ -531,7 +533,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         println("Last element customExponent: $lastElement")
         val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
-        if(lastElement in notPermittedOperators){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+        if(lastElement in notPermittedOperators || currentValue == "0"){ //do not permit to add an '^' immediately after a left parenthesis or other operator
             return currentValue
         }
 
