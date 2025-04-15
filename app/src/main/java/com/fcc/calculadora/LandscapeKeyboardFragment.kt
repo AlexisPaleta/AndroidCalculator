@@ -158,6 +158,11 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.specificExponentFunction(3)
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.xYButton.setOnClickListener {
+            val value = buttonsBehavior.customExponent()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 

@@ -494,7 +494,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //options are ok
         }
         if (currentValue == null)
-            return "ERROR"
+            return "ERROR in specific exponent"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         println("Last element specific exponent: $lastElement")
         val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
@@ -515,6 +515,42 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
         return currentValue
 
+    }
+
+    fun customExponent(): String{
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        if(basicNumbersVM.isNaN()){
+            someResetActions()
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
+        }
+        if (currentValue == null)
+            return "ERROR in customExponent"
+
+        val lastElement = currentValue.get(currentValue.length - 1).toString()
+        println("Last element customExponent: $lastElement")
+        val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
+        if(lastElement in notPermittedOperators){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+            return currentValue
+        }
+
+        if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
+            //is not a percentage symbol
+            basicNumbersVM.addDigit()
+            basicNumbersVM.setOnlyWritePercentage(true)
+            displayMessage("In customExponent before left (, Current numberLength is " + basicNumbersVM.getNumberLength())
+            basicNumbersVM.setCurrentOperation(currentValue + '^')
+            basicNumbersVM.addCharCurrentNumber('^')
+            basicNumbersVM.addCharEncapsulatedCurrentNumber('^')
+            val newString = leftParenthesisFunction() //The leftParenthesisFunction will add the '(' char to the current, encapsulated
+            //and return the currentOperation with the '(' added. The leftParenthesis function gets the currentOperation value that's the
+            //reason why I modify the currentOperationValue to add '^' before calling leftParenthesis
+            println("Current number in customExponent: ${basicNumbersVM.getCurrentNumber()}")
+            println("Encapsulated Current number in customExponent: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
+            return newString
+        }
+        return currentValue
     }
 
     private fun someResetActions(){
