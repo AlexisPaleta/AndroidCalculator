@@ -34,6 +34,7 @@ class BasicNumbersViewModel: ViewModel() {
     private var onlyWritePercentage = false//After some operations is better to only write the percentageOperator instead of the previousNumber function, after 'complex' operations like
     //exponents, roots, log, e, sen, etc.
     private var scientificNotation = false//To know if an 'E' was introduced at the current number
+    private var radiansMode: MutableLiveData<Boolean> = MutableLiveData(false)//variable to know the way to calculate trigonometric operations
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -169,6 +170,14 @@ class BasicNumbersViewModel: ViewModel() {
 
     fun setScientificNotation(value:Boolean){
         scientificNotation = value
+    }
+
+    fun isRadiansMode(): MutableLiveData<Boolean>{
+        return radiansMode
+    }
+
+    fun setRadiansMode(value: Boolean){
+        radiansMode.value = value
     }
 
 }

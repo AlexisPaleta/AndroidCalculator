@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fcc.calculadora.databinding.FragmentLanscapeKeyboardBinding
 
@@ -48,6 +49,16 @@ class LandscapeKeyboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val radiansModeObserver = Observer<Boolean>{value ->
+            if (value){
+                binding.DegButton.text = "Rad"
+            }else{
+                binding.DegButton.text = "Deg"
+            }
+        }
+
+        basicNumbersVM.isRadiansMode().observe(viewLifecycleOwner, radiansModeObserver)
 
         binding.ACbutton.setOnClickListener {
             buttonsBehavior.acButtonFunction()
@@ -252,6 +263,15 @@ class LandscapeKeyboardFragment : Fragment() {
         binding.RandButton.setOnClickListener {
             val value = buttonsBehavior.randomNumber()
             basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.DegButton.setOnClickListener {
+            val value = basicNumbersVM.isRadiansMode().value
+            if(value == true){
+                basicNumbersVM.setRadiansMode(false)
+            }else if(value == false){
+                basicNumbersVM.setRadiansMode(true)
+            }
         }
     }
 
