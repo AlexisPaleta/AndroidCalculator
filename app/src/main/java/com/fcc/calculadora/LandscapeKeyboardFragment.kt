@@ -198,6 +198,51 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.scientificNotation()
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.eXButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("\uD835\uDC52^")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.lnButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("ln")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.logButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("log")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.sinButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("sin")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.cosButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("cos")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.tanButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("tan")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.sinhButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("sinh")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.coshButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("cosh")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.tanhButton.setOnClickListener {
+            val value = buttonsBehavior.operationsWithOpenParenthesis("tanh")
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 
