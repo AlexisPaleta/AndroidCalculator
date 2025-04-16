@@ -243,6 +243,11 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.operationsWithOpenParenthesis("tanh")
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.xExclamationButton.setOnClickListener {
+            val value = buttonsBehavior.factorial()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 

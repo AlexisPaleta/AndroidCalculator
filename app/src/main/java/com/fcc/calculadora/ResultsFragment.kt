@@ -90,7 +90,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         val formatted = changeFormat(filledOut)
         println("Formatted: " + formatted)
         val expression = Expression(formatted)
-        val result = expression.calculate()
+        var result = expression.calculate()
 
         //The isFloatNumber() is for only limit the length of the written number,
         // to know if the result is a float another variable is needed.It is necessary to
@@ -154,6 +154,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 numberLength = finalResult.length
             }
             basicNumbersVM.setNumberLength(numberLength)
+            if(basicNumbersVM.isNaN()){
+                basicNumbersVM.setCurrentOperation("Math error")
+            }
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
             //binding.previousOperationText.text = checked
@@ -175,6 +178,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             }
             println("Encapsulated Current number in result: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             basicNumbersVM.setNumberLength(numberLength)
+            if(basicNumbersVM.isNaN()){
+                basicNumbersVM.setCurrentOperation("Math error")
+            }
         }
     }
 
@@ -200,6 +206,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         operation = operation.replace("÷","/")
         operation = operation.replace("—","-")
         operation = operation.replace("\uD835\uDC52","e")
+        operation = operation.replace("log(","log(10,")
         return operation
     }
 

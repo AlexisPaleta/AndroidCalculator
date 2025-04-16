@@ -16,7 +16,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val totalLength = currentValue?.length
         val currentNumber = basicNumbersVM.getCurrentNumber()
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
-        val notPermittedSymbols = listOf("%","π")
+        val notPermittedSymbols = listOf("%","π","!")
         if (!isMaximumNumberLength() && currentValue != "0" && lastElement !in notPermittedSymbols && !currentNumber.endsWith("\uD835\uDC52")) { //Only add a zero if there is not a unique zero
             //and the limit of elements on screen is 10
             basicNumbersVM.addDigit()
@@ -38,7 +38,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
         val totalLength = currentValue?.length
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
-        val notPermittedSymbols = listOf("%","π")
+        val notPermittedSymbols = listOf("%","π","!")
         val currentNumber = basicNumbersVM.getCurrentNumber()
 
         if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
@@ -143,7 +143,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val currentNumber = basicNumbersVM.getCurrentNumber()
         val totalLength = currentValue?.length
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
-        val notPermittedSymbols = listOf("\uD835\uDC52","%","π" )
+        val notPermittedSymbols = listOf("\uD835\uDC52","%","π","!")
         if(!basicNumbersVM.isFloatNumber() && !currentNumber.contains('E') && (lastElement !in notPermittedSymbols)){ //Only add the "." when the number was not already a float
             basicNumbersVM.setFloat(true)
             if (currentValue == "0") {
@@ -619,10 +619,16 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
     }
 
     fun scientificNotation(): String{
-        val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         val currentNumber = basicNumbersVM.getCurrentNumber()
         val totalLength = currentValue?.length
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
+        if(basicNumbersVM.isNaN()){
+            someResetActions()
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
+        }
         val notPermittedSymbols = listOf("x","÷","+","-","%","(",".","!","π")
         if (currentValue != "0" && !currentNumber.contains('E') && lastElement !in notPermittedSymbols && !basicNumbersVM.isScientificNotation() && !currentNumber.endsWith("\uD835\uDC52")){
             basicNumbersVM.setNumberLength(2)
@@ -682,6 +688,32 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             println("Current number in operationsWithOpenParenthesis: ${basicNumbersVM.getCurrentNumber()}")
             println("Encapsulated Current number in operationsWithOpenParenthesis: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return newString
+        }
+        return currentValue
+    }
+
+    fun factorial(): String{
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        if(basicNumbersVM.isNaN()){
+            someResetActions()
+            currentValue = "0"//Consider the currentOperation as "0", I don't call the
+            //acButtonFunction() because it writes "0" on screen and that is not necessary, but either
+            //options are ok
+        }
+        if (currentValue == null)
+            return "ERROR in factorial"
+
+        val notPermittedSymbols = listOf("x","÷","+","-","%","(",".","!","π")
+        val currentNumber = basicNumbersVM.getCurrentNumber()
+        val totalLength = currentValue?.length
+        val lastElement = currentValue?.get(totalLength!! - 1).toString()
+        if(currentValue != "0" && !currentNumber.contains('E') && lastElement !in notPermittedSymbols && !basicNumbersVM.isScientificNotation() && !currentNumber.endsWith("\uD835\uDC52")){
+            //Do not permit to add numbers after a !
+            basicNumbersVM.addCharCurrentNumber('!')
+            basicNumbersVM.addCharEncapsulatedCurrentNumber('!')
+            println("Current number in specialNumbers: ${basicNumbersVM.getCurrentNumber()}")
+            println("Encapsulated Current number in specialNumbers: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
+            return currentValue + '!'
         }
         return currentValue
     }
