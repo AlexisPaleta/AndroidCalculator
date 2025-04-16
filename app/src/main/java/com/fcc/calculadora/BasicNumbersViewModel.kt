@@ -33,6 +33,7 @@ class BasicNumbersViewModel: ViewModel() {
     private var replacePreviousNumberForEncapsulated = false//Variable to know if the swap between the encapsulatedCurrentNumber with previous is necessary
     private var onlyWritePercentage = false//After some operations is better to only write the percentageOperator instead of the previousNumber function, after 'complex' operations like
     //exponents, roots, log, e, sen, etc.
+    private var scientificNotation = false//To know if an 'E' was introduced at the current number
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -160,6 +161,14 @@ class BasicNumbersViewModel: ViewModel() {
     }
     fun setOnlyWritePercentage(value: Boolean){
         onlyWritePercentage = value
+    }
+
+    fun isScientificNotation(): Boolean{
+        return scientificNotation
+    }
+
+    fun setScientificNotation(value:Boolean){
+        scientificNotation = value
     }
 
 }

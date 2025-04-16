@@ -14,9 +14,10 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
     fun zeroButtonFunction(){
         val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         val totalLength = currentValue?.length
+        val currentNumber = basicNumbersVM.getCurrentNumber()
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
-        val notPermitedSymbols = listOf("\uD835\uDC52",'%',"π" )
-        if (!isMaximumNumberLength() && currentValue != "0" && lastElement !in notPermitedSymbols) { //Only add a zero if there is not a unique zero
+        val notPermittedSymbols = listOf("%","π")
+        if (!isMaximumNumberLength() && currentValue != "0" && lastElement !in notPermittedSymbols && !currentNumber.contains("\uD835\uDC52")) { //Only add a zero if there is not a unique zero
             //and the limit of elements on screen is 10
             basicNumbersVM.addDigit()
             basicNumbersVM.setCurrentOperation(currentValue + '0')
@@ -37,7 +38,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
         val totalLength = currentValue?.length
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
-        val notPermitedSymbols = listOf("\uD835\uDC52",'%',"π" )
+        val notPermittedSymbols = listOf("%","π")
+        val currentNumber = basicNumbersVM.getCurrentNumber()
 
         if(currentValue == "0"){ //If the operation is only a "0" then I'll replace it with the value of the pressed button
             basicNumbersVM.addDigit()
@@ -47,7 +49,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             basicNumbersVM.setEncapsulatedCurrentNumber("$number")
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return number.toString()
-        }else if (!isMaximumNumberLength() && lastElement !in notPermitedSymbols){// check if the current number is not too large and the just behind element
+        }else if (!isMaximumNumberLength() && lastElement !in notPermittedSymbols && !currentNumber.contains("\uD835\uDC52")){// check if the current number is not too large and the just behind element
             //is not a percentage symbol
             basicNumbersVM.addDigit()
             displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
@@ -72,14 +74,16 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         if (currentValue == null)
             return "ERROR"
         val lastElement = currentValue.get(currentValue.length - 1).toString()
-        val notPermittedOperators = listOf("x","÷","+","-")
-        if(operator in notPermittedOperators && lastElement == "(" || basicNumbersVM.getCurrentNumber() == "0"){ //do not permit to add an operator immediately after a left parenthesis or other operator
+        val notPermittedSymbols = listOf("E",".","(")
+        if(lastElement in notPermittedSymbols || basicNumbersVM.getCurrentNumber() == "0"){ //do not permit to add an operator immediately after a left parenthesis or other operator
+            println("here")
             return currentValue
         }
         val operators = listOf("+","-","÷","x")
         basicNumbersVM.resetNumberLength() //after an operator the next digits will be part of a new number
         basicNumbersVM.setFloat(false)//after an operator the current number is another, by default is not a float
         //so the length needs to be 0
+        basicNumbersVM.setScientificNotation(false)
         //Check if the last element of the current operation is a sign, in that case it'll be replaced with the new operator
         if (basicNumbersVM.getCurrentNumber().length>1){ //Without this condition if the user operation is for example "50 +"
             //and then press the "-", when the "+" was pressed the previousButton was correct, a "+50" but with the pressed "-"
@@ -108,15 +112,25 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
         println("Current number: ${basicNumbersVM.getCurrentNumber()}")
         if(lastElement in operators){
+            println("replacing last condition")
+
             basicNumbersVM.replaceLastCharEncapsulatedCurrentNumber(operator)
-            if(basicNumbersVM.getOpenParenthesis() == 0){
-                basicNumbersVM.setEncapsulatedCurrentNumber("")//All the parenthesis are closed, a new encapsulated starts
-            }
+
+
+
+
+            //if(basicNumbersVM.getOpenParenthesis() == 0){
+               // basicNumbersVM.setEncapsulatedCurrentNumber("")//All the parenthesis are closed, a new encapsulated starts
+            //}//TODO THIS CONDITION MADE THE CHANGE SIGN OPERATION FAIL WHEN THERE WAS A PREVIOUS OPERATOR AND THIS CONDITION WAS TRYINGG TO
+            //TODO REPLACE IT AND THE FINAL OPERATOR WAS "-", THE CHANGE SIGN DO NOT FIND THE NUMBER. AN EXAMPLE IS "8+" -> "8x" -> "8-" -> "8-9" AND THEN CHANGE SIGN
+            //val newEncapsulated = basicNumbersVM.getEncapsulatedCurrentNumber().dropLast(1) + operator
+            //basicNumbersVM.setEncapsulatedCurrentNumber(newEncapsulated)
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return currentValue.dropLast(1) + operator //Drops last character and replaces with the new operator
         }else{
             basicNumbersVM.addStrEncapsulatedCurrentNumber(operator)
             if(basicNumbersVM.getOpenParenthesis() == 0 && !basicNumbersVM.getReplacePreviousNumberForEncapsulated() && operator in listOf("+","-")){
+                println("All the parenthesis are closed, a new encapsulated starts")
                 basicNumbersVM.setEncapsulatedCurrentNumber(operator)//All the parenthesis are closed, a new encapsulated starts
             }
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
@@ -129,8 +143,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val currentNumber = basicNumbersVM.getCurrentNumber()
         val totalLength = currentValue?.length
         val lastElement = currentValue?.get(totalLength!! - 1).toString()
-        val notPermitedSymbols = listOf("\uD835\uDC52","%","π" )
-        if(!basicNumbersVM.isFloatNumber() && !currentNumber.contains('E') && (lastElement !in notPermitedSymbols)){ //Only add the "." when the number was not already a float
+        val notPermittedSymbols = listOf("\uD835\uDC52","%","π" )
+        if(!basicNumbersVM.isFloatNumber() && !currentNumber.contains('E') && (lastElement !in notPermittedSymbols)){ //Only add the "." when the number was not already a float
             basicNumbersVM.setFloat(true)
             if (currentValue == "0") {
                 basicNumbersVM.addDigit()
@@ -396,7 +410,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val oneOnly = totalLength!! > currentNumberLength//I need to know if the user is
         //trying to obtain the percentages of a unique number like +0.5% or 10%, if that
         //is the case that has to be in his own condition, and that is not the next line
-        if((previousNumber == "(") || !checkParenthesis(previousNumber, actualNumber)){
+        if((previousNumber == "(") || !checkParenthesis(previousNumber, actualNumber) || basicNumbersVM.isScientificNotation()){
             println("Not validated")
             return currentOperation + ""
         }
@@ -446,6 +460,10 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }
         if (currentValue == null)
             return "Error left parenthesis"
+
+        if(basicNumbersVM.isScientificNotation()){//A leftParenthesis can't be after the 'E'
+            return currentValue
+        }
         basicNumbersVM.addOpenParenthesis()//add 1 to the openParenthesis
         basicNumbersVM.setOnlyWritePercentage(true)//after a parenthesis the percentage operation can use the previousNumber logic, but for the moment the only
         //way is outside of parenthesis or using the whole encapsulated number, for that reason the assigned value is 'true'
@@ -470,8 +488,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
     fun rightParenthesis(): String{
         var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         val lastElement = currentValue?.get(currentValue.length - 1)
-        val notPermitedSymbols = listOf('x','÷','-','+','(')
-        if(currentValue == "0" || lastElement in notPermitedSymbols || basicNumbersVM.getOpenParenthesis() == 0){
+        val notPermittedSymbols = listOf('x','÷','-','+','(')
+        if(currentValue == "0" || lastElement in notPermittedSymbols || basicNumbersVM.getOpenParenthesis() == 0){
             return currentValue + ""
         }
         if(basicNumbersVM.getOpenParenthesis() > 0){//Only execute when there are a correct value of parenthesis
@@ -505,7 +523,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         println("Last element specific exponent: $lastElement")
         val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
-        if(lastElement in notPermittedOperators || currentValue == "0"){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+        if(lastElement in notPermittedOperators || currentValue == "0" || basicNumbersVM.isScientificNotation()){ //do not permit to add an '^' immediately after a left parenthesis or other operator
             return currentValue
         }
 
@@ -541,7 +559,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         println("Last element customExponent: $lastElement")
         val notPermittedOperators = listOf("x","÷","+","-","^",".","(")
-        if(lastElement in notPermittedOperators || currentValue == "0"){ //do not permit to add an '^' immediately after a left parenthesis or other operator
+        if(lastElement in notPermittedOperators || currentValue == "0" || basicNumbersVM.isScientificNotation()){ //do not permit to add an '^' immediately after a left parenthesis or other operator
             return currentValue
         }
 
@@ -586,7 +604,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         val lastElement = currentValue.get(currentValue.length - 1).toString()
         println("Last element specialNumbers: $lastElement")
         val permittedOperators = listOf("x","÷","+","-","(",")")
-        if(lastElement !in permittedOperators){ //Only permit to add the special number after an operator, or parenthesis
+        if(lastElement !in permittedOperators || basicNumbersVM.isScientificNotation()){ //Only permit to add the special number after an operator, or parenthesis
             return currentValue
         }
 
@@ -598,8 +616,26 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.addStrEncapsulatedCurrentNumber(number)
         println("Encapsulated Current number in specialNumbers: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
         return currentValue + number
+    }
 
+    fun scientificNotation(): String{
+        val currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+        val currentNumber = basicNumbersVM.getCurrentNumber()
+        val totalLength = currentValue?.length
+        val lastElement = currentValue?.get(totalLength!! - 1).toString()
+        val notPermittedSymbols = listOf("x","÷","+","-","%","(",".","!","π")
 
+        if (currentValue != "0" && !currentNumber.contains('E') && lastElement !in notPermittedSymbols && !basicNumbersVM.isScientificNotation() && !currentNumber.contains("\uD835\uDC52")){
+            basicNumbersVM.setNumberLength(2)
+            //basicNumbersVM.addCharCurrentNumber('E')
+            //basicNumbersVM.addCharEncapsulatedCurrentNumber('E')
+            basicNumbersVM.setCurrentNumber("+")
+            basicNumbersVM.addCharEncapsulatedCurrentNumber('E')
+            basicNumbersVM.setScientificNotation(true)
+            return currentValue + 'E'
+        }else{
+            return currentValue + ""
+        }
 
     }
 
@@ -612,6 +648,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         basicNumbersVM.setEncapsulatedCurrentNumber("")
         basicNumbersVM.setOpenParenthesis(0)
         basicNumbersVM.setOnlyWritePercentage(false)
+        basicNumbersVM.setScientificNotation(false)
         println("Current number: ${basicNumbersVM.getCurrentNumber()}")
     }
 

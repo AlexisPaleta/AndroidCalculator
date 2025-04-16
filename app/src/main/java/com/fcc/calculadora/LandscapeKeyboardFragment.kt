@@ -193,6 +193,11 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.specialNumbers("\uD835\uDC52")
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.tenXButton.setOnClickListener {
+            val value = buttonsBehavior.scientificNotation()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 
