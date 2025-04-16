@@ -175,10 +175,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             }
             println("Encapsulated Current number in result: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             basicNumbersVM.setNumberLength(numberLength)
-
-
         }
-
     }
 
     fun checkEmptyPoints(): String{
@@ -201,6 +198,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         operation = operation.replace("x","*")
         operation = operation.replace("÷","/")
         operation = operation.replace("—","-")
+        operation = operation.replace("\uD835\uDC52","e")
         return operation
     }
 

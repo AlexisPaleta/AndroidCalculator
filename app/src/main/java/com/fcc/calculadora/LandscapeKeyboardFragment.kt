@@ -183,6 +183,16 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.customExponent("1/")
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.PiButton.setOnClickListener {
+            val value = buttonsBehavior.specialNumbers("π")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.eButton.setOnClickListener {
+            val value = buttonsBehavior.specialNumbers("\uD835\uDC52")
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 
