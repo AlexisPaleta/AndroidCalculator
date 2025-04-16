@@ -248,6 +248,11 @@ class LandscapeKeyboardFragment : Fragment() {
             val value = buttonsBehavior.factorial()
             basicNumbersVM.setCurrentOperation(value)
         }
+
+        binding.RandButton.setOnClickListener {
+            val value = buttonsBehavior.randomNumber()
+            basicNumbersVM.setCurrentOperation(value)
+        }
     }
 
 

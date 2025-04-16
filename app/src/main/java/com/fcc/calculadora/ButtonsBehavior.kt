@@ -2,6 +2,7 @@ package com.fcc.calculadora
 
 import android.content.Context
 import android.widget.Toast
+import kotlin.random.Random
 
 class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private val context: Context, private var currentToast: Toast? = null) {
 
@@ -716,6 +717,43 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return currentValue + '!'
         }
         return currentValue
+    }
+
+    fun randomNumber(): String{
+        var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
+
+        if(basicNumbersVM.isNaN()){
+            someResetActions()
+            currentValue = "0"
+        }
+        if (currentValue == null)
+            return "ERROR in randomNumber"
+
+        val rnd = String.format("%.3f",Random.nextDouble(0.000, 0.999))
+
+
+        if (currentValue == "0"){
+            basicNumbersVM.setNumberLength(4)
+            basicNumbersVM.setCurrentNumber("+$rnd")
+            println("Current number in randomNumber: ${basicNumbersVM.getCurrentNumber()}")
+            basicNumbersVM.setEncapsulatedCurrentNumber(rnd)
+            println("Encapsulated Current number in randomNumber: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
+            return rnd
+        }
+        val lastElement = currentValue.get(currentValue.length - 1).toString()
+        val permittedOperators = listOf("x","÷","+","-","(",")")
+        if(lastElement !in permittedOperators || basicNumbersVM.isScientificNotation()){ //Only permit to add the special number after an operator, or parenthesis
+            return currentValue
+        }
+
+
+        basicNumbersVM.setNumberLength(4)
+        displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
+        basicNumbersVM.addStrCurrentNumber(rnd)
+        println("Current number in randomNumber: ${basicNumbersVM.getCurrentNumber()}")
+        basicNumbersVM.addStrEncapsulatedCurrentNumber(rnd)
+        println("Encapsulated Current number in randomNumber: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
+        return currentValue + rnd
     }
 
     private fun someResetActions(){
