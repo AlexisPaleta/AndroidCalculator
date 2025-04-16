@@ -150,17 +150,37 @@ class LandscapeKeyboardFragment : Fragment() {
         }
 
         binding.powerTwoButton.setOnClickListener {
-            val value = buttonsBehavior.specificExponentFunction(2)
+            val value = buttonsBehavior.specificExponentFunction("2")
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.powerThreeButton.setOnClickListener {
-            val value = buttonsBehavior.specificExponentFunction(3)
+            val value = buttonsBehavior.specificExponentFunction("3")
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.xYButton.setOnClickListener {
-            val value = buttonsBehavior.customExponent()
+            val value = buttonsBehavior.customExponent("")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.oneDivXButton.setOnClickListener {
+            val value = buttonsBehavior.specificExponentFunction("-1")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.root2Button.setOnClickListener {
+            val value = buttonsBehavior.specificExponentFunction("1/2")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.root3Button.setOnClickListener {
+            val value = buttonsBehavior.specificExponentFunction("1/3")
+            basicNumbersVM.setCurrentOperation(value)
+        }
+
+        binding.rootYButton.setOnClickListener {
+            val value = buttonsBehavior.customExponent("1/")
             basicNumbersVM.setCurrentOperation(value)
         }
     }

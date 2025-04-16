@@ -409,7 +409,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //is true when the operation is like the followings examples: 100-2%, 0.5+2%. That is because
             //when the operator of the operation is a "+" or "-" the user wants to obtain that percentage of the
             //previous number
-            val percentageNumber = "${sign}(${actualNumber.drop(1)}%x${previousNumber})" //I will considerate all the parenthesis operation
+            val percentageNumber = "${sign}(${actualNumber.drop(1)}%x(${previousNumber}))" //I will considerate all the parenthesis operation
             //as a unique number, first I separate the sign to write it before the parenthesis and because I already used the sign
             //of the current number in that position I have to omit it inside the parenthesis
             basicNumbersVM.setCurrentNumber(percentageNumber)
@@ -487,7 +487,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         return currentValue + ")"
     }
 
-    fun specificExponentFunction(exponent : Int): String{
+    fun specificExponentFunction(exponent : String): String{
         var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if(basicNumbersVM.isNaN()){
             someResetActions()
@@ -519,7 +519,10 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
     }
 
-    fun customExponent(): String{
+    fun customExponent(complement: String): String{//The complement is to use this operation with the customExponent logic and the custom root
+        //when the customExponent logic is working the complement is an empty string "", but with the custom root is "1/" because the roots
+        //are exponents but diving one, example: the square root of 4 is equal to 4^(1/2).
+        //The complement will be added after the leftParenthesis
         var currentValue  = basicNumbersVM.getCurrentOperation().value //Check actual operation
         if(basicNumbersVM.isNaN()){
             someResetActions()
@@ -545,9 +548,11 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             basicNumbersVM.setCurrentOperation(currentValue + '^')
             basicNumbersVM.addCharCurrentNumber('^')
             basicNumbersVM.addCharEncapsulatedCurrentNumber('^')
-            val newString = leftParenthesisFunction() //The leftParenthesisFunction will add the '(' char to the current, encapsulated
+            val newString = leftParenthesisFunction() + complement //The leftParenthesisFunction will add the '(' char to the current, encapsulated
             //and return the currentOperation with the '(' added. The leftParenthesis function gets the currentOperation value that's the
             //reason why I modify the currentOperationValue to add '^' before calling leftParenthesis
+            basicNumbersVM.addStrCurrentNumber(complement)
+            basicNumbersVM.addStrEncapsulatedCurrentNumber(complement)
             println("Current number in customExponent: ${basicNumbersVM.getCurrentNumber()}")
             println("Encapsulated Current number in customExponent: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return newString
