@@ -59,8 +59,10 @@ class LandscapeKeyboardFragment : Fragment() {
         val radiansModeObserver = Observer<Boolean>{value ->
             if (value){
                 binding.DegButton.text = "Rad"
+                binding.DegButton.setBackgroundResource(R.drawable.activated_button) //Changing the Deg button style
             }else{
                 binding.DegButton.text = "Deg"
+                binding.DegButton.setBackgroundResource(R.drawable.rounded_button) //Changing the Deg button style
             }
         }
 
@@ -312,6 +314,8 @@ class LandscapeKeyboardFragment : Fragment() {
             binding.sinhButton.text = getString(R.string.asinhButton)
             binding.coshButton.text = getString(R.string.acoshButton)
             binding.tanhButton.text = getString(R.string.atanhButton)
+
+            binding.secoNDButton.setBackgroundResource(R.drawable.activated_button) //Changing the 2nd button style
         }else{
             sin = getString(R.string.sin)
             cos = getString(R.string.cos)
@@ -326,6 +330,8 @@ class LandscapeKeyboardFragment : Fragment() {
             binding.sinhButton.text = sinh
             binding.coshButton.text = cosh
             binding.tanhButton.text = tanh
+
+            binding.secoNDButton.setBackgroundResource(R.drawable.rounded_button) //Changing the 2nd button style
         }
     }
 
