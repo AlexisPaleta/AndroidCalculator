@@ -83,6 +83,14 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }
         //mXparser.setEpsilon(1e-20)
         //mXparser.disableCanonicalRounding()
+        val isRadiansMode = basicNumbersVM.isRadiansMode().value == true
+        println("isRadiansMode = $isRadiansMode")
+        if (isRadiansMode){
+            mXparser.setRadiansMode()
+        }else{
+            mXparser.setDegreesMode()
+        }
+
         println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
         val cleaned = checkEmptyPoints()
         val checked = checkFinalCharacter(cleaned)
@@ -90,7 +98,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         val formatted = changeFormat(filledOut)
         println("Formatted: " + formatted)
         val expression = Expression(formatted)
-        val result = expression.calculate()
+        var result = expression.calculate()
 
         //The isFloatNumber() is for only limit the length of the written number,
         // to know if the result is a float another variable is needed.It is necessary to
@@ -128,6 +136,9 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
             //binding.previousOperationText.text = checked
             basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setOnlyWritePercentage(false)
+            basicNumbersVM.setEncapsulatedCurrentNumber(finalResult)
+            basicNumbersVM.setReplacePreviousNumberForEncapsulated(false)
             basicNumbersVM.setFloat(false)
             var numberLength = finalResult.length
             if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
@@ -139,6 +150,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 basicNumbersVM.setCurrentNumber("+$finalResult")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
+            println("Encapsulated Current number in result: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
 
             if(finalResult.contains('E')){
                 //I want to know the length of the result because when after it appears on the
@@ -150,11 +162,17 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 numberLength = finalResult.length
             }
             basicNumbersVM.setNumberLength(numberLength)
+            if(basicNumbersVM.isNaN()){
+                basicNumbersVM.setCurrentOperation("Math error")
+            }
         }else{
             val finalResult: String = cleanAfterPoint(result, false)
             //binding.previousOperationText.text = checked
             basicNumbersVM.setPreviousOperation(filledOut)
             basicNumbersVM.setCurrentOperation(finalResult)
+            basicNumbersVM.setEncapsulatedCurrentNumber(finalResult)
+            basicNumbersVM.setOnlyWritePercentage(false)
+            basicNumbersVM.setReplacePreviousNumberForEncapsulated(false)
             basicNumbersVM.setFloat(true)
             var numberLength = finalResult.length - 1//The minus is because there is a "."
             if(finalResult.startsWith('-')){//It is necessary to know the sign of the result to save it correctly on the viewModel
@@ -166,12 +184,12 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
                 basicNumbersVM.setCurrentNumber("+$finalResult")
                 println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             }
-
+            println("Encapsulated Current number in result: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             basicNumbersVM.setNumberLength(numberLength)
-
-
+            if(basicNumbersVM.isNaN()){
+                basicNumbersVM.setCurrentOperation("Math error")
+            }
         }
-
     }
 
     fun checkEmptyPoints(): String{
@@ -186,6 +204,7 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         currentOperation = currentOperation.replace(".(",".0(")
         currentOperation = currentOperation.replace("%(","%x(")
         currentOperation = currentOperation.replace(".)",".0)")
+        currentOperation = currentOperation.replace("E.","E0.")
         return currentOperation
     }
 
@@ -194,6 +213,8 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         operation = operation.replace("x","*")
         operation = operation.replace("÷","/")
         operation = operation.replace("—","-")
+        operation = operation.replace("\uD835\uDC52","e")
+        operation = operation.replace("log(","log(10,")
         return operation
     }
 

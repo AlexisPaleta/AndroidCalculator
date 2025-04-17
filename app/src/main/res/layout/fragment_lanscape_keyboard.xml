@@ -79,7 +79,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/ac_button"
+                android:textColor="#B00020"
                 android:text="@string/ac"
                 android:textSize="20sp" />
 
@@ -89,7 +90,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/change_sign"
                 android:textSize="20sp" />
 
@@ -99,7 +101,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/percentage"
                 android:textSize="20sp" />
 
@@ -108,7 +111,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/division"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -169,6 +173,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
+                android:textStyle="bold"
                 android:text="@string/ex"
                 android:textSize="20sp" />
 
@@ -178,7 +183,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/seven"
                 android:textSize="20sp" />
 
@@ -188,7 +193,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/eight"
                 android:textSize="20sp" />
 
@@ -198,7 +203,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/nine"
                 android:textSize="20sp" />
 
@@ -207,7 +212,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
+                android:textAllCaps="false"
                 android:text="@string/multiplication"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -279,7 +286,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/four"
                 android:textSize="20sp" />
 
@@ -289,7 +296,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/five"
                 android:textSize="20sp" />
 
@@ -299,7 +306,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/six"
                 android:textSize="20sp" />
 
@@ -308,7 +315,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/minus"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -370,6 +378,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
+                android:textStyle="bold"
                 android:text="@string/e"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
@@ -380,7 +389,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/one"
                 android:textSize="20sp" />
 
@@ -390,7 +399,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/two"
                 android:textSize="20sp" />
 
@@ -400,7 +409,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/three"
                 android:textSize="20sp" />
 
@@ -409,7 +418,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/plus"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -425,7 +435,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/unique_button"
                 android:text="@string/calculator"
                 android:textSize="20sp" />
 
@@ -436,7 +446,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
-                android:text="@string/sinH"
+                android:text="@string/sinh"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -447,7 +457,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
-                android:text="@string/cosH"
+                android:text="@string/cosh"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -458,7 +468,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button"
-                android:text="@string/tanH"
+                android:text="@string/tanh"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -479,7 +489,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/Rand"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
@@ -490,7 +500,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/zero"
                 android:textSize="20sp" />
 
@@ -500,7 +510,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/normal_buttons"
                 android:text="@string/point"
                 android:textSize="20sp" />
 
@@ -509,7 +519,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/equal_button"
+                android:textColor="#28b463"
                 android:text="@string/equal"
                 android:textSize="20sp" />
         </LinearLayout>

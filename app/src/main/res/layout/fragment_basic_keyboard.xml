@@ -32,7 +32,8 @@
                 android:layout_height="80dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/ac_button"
+                android:textColor="#B00020"
                 android:text="@string/ac"
                 android:textSize="40sp" />
 
@@ -42,7 +43,8 @@
                 android:layout_height="80dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/change_sign"
                 android:textSize="40sp" />
 
@@ -52,7 +54,8 @@
                 android:layout_height="80dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/percentage"
                 android:textSize="40sp" />
 
@@ -61,7 +64,8 @@
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/division"
                 android:textSize="40sp" />
         </LinearLayout>
@@ -108,7 +112,9 @@
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
+                android:textAllCaps="false"
                 android:text="@string/multiplication"
                 android:textSize="40sp" />
         </LinearLayout>
@@ -155,7 +161,8 @@
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/minus"
                 android:textSize="40sp" />
         </LinearLayout>
@@ -202,7 +209,8 @@
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/special_buttons"
+                android:textColor="#d4ac0d"
                 android:text="@string/plus"
                 android:textSize="40sp" />
         </LinearLayout>
@@ -219,7 +227,7 @@
                 android:layout_height="80dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/unique_button"
                 android:text="@string/calculator"
                 android:textSize="40sp" />
 
@@ -248,7 +256,8 @@
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/equal_button"
+                android:textColor="#28b463"
                 android:text="@string/equal"
                 android:textSize="40sp" />
         </LinearLayout>

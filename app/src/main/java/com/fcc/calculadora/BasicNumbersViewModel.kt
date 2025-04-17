@@ -31,6 +31,11 @@ class BasicNumbersViewModel: ViewModel() {
     //the "+" and "-" will be part of the encapsulatedCurrentNumber. The percentageButton will check the length of encapsulatedCurrentNumber and if is more than
     //maybe 1 then the previous will be replaced with encapsulatedCurrentNumber. TODO !!IMPORTANT firstly only the parenthesis logic will be implemented
     private var replacePreviousNumberForEncapsulated = false//Variable to know if the swap between the encapsulatedCurrentNumber with previous is necessary
+    private var onlyWritePercentage = false//After some operations is better to only write the percentageOperator instead of the previousNumber function, after 'complex' operations like
+    //exponents, roots, log, e, sen, etc.
+    private var scientificNotation = false//To know if an 'E' was introduced at the current number
+    private var radiansMode: MutableLiveData<Boolean> = MutableLiveData(false)//variable to know the way to calculate trigonometric operations
+    private var inverseTrigonometric: MutableLiveData<Boolean> = MutableLiveData(false)
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -98,6 +103,10 @@ class BasicNumbersViewModel: ViewModel() {
         currentNumber += character
     }
 
+    fun addStrCurrentNumber(str: String){
+        currentNumber += str
+    }
+
     fun getPreviousNumber(): String{
         return previousNumber
     }
@@ -148,4 +157,36 @@ class BasicNumbersViewModel: ViewModel() {
     fun setReplacePreviousNumberForEncapsulated(value: Boolean){
         replacePreviousNumberForEncapsulated = value
     }
+
+    fun getOnlyWritePercentage(): Boolean{
+        return onlyWritePercentage
+    }
+    fun setOnlyWritePercentage(value: Boolean){
+        onlyWritePercentage = value
+    }
+
+    fun isScientificNotation(): Boolean{
+        return scientificNotation
+    }
+
+    fun setScientificNotation(value:Boolean){
+        scientificNotation = value
+    }
+
+    fun isRadiansMode(): MutableLiveData<Boolean>{
+        return radiansMode
+    }
+
+    fun setRadiansMode(value: Boolean){
+        radiansMode.value = value
+    }
+
+    fun isInverseTrigonometric(): MutableLiveData<Boolean>{
+        return inverseTrigonometric
+    }
+
+    fun setInverseTrigonometric(value: Boolean){
+        inverseTrigonometric.value = value
+    }
+
 }
