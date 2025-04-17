@@ -35,6 +35,7 @@ class BasicNumbersViewModel: ViewModel() {
     //exponents, roots, log, e, sen, etc.
     private var scientificNotation = false//To know if an 'E' was introduced at the current number
     private var radiansMode: MutableLiveData<Boolean> = MutableLiveData(false)//variable to know the way to calculate trigonometric operations
+    private var inverseTrigonometric: MutableLiveData<Boolean> = MutableLiveData(false)
     fun getCurrentOperation(): MutableLiveData<String>{
         return currentOperation
     }
@@ -178,6 +179,14 @@ class BasicNumbersViewModel: ViewModel() {
 
     fun setRadiansMode(value: Boolean){
         radiansMode.value = value
+    }
+
+    fun isInverseTrigonometric(): MutableLiveData<Boolean>{
+        return inverseTrigonometric
+    }
+
+    fun setInverseTrigonometric(value: Boolean){
+        inverseTrigonometric.value = value
     }
 
 }

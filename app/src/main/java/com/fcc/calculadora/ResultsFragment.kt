@@ -83,6 +83,14 @@ class ResultsFragment : Fragment() { //This fragment is for the basic calculator
         }
         //mXparser.setEpsilon(1e-20)
         //mXparser.disableCanonicalRounding()
+        val isRadiansMode = basicNumbersVM.isRadiansMode().value == true
+        println("isRadiansMode = $isRadiansMode")
+        if (isRadiansMode){
+            mXparser.setRadiansMode()
+        }else{
+            mXparser.setDegreesMode()
+        }
+
         println("CurrentOperation: " + basicNumbersVM.getCurrentOperation().value)
         val cleaned = checkEmptyPoints()
         val checked = checkFinalCharacter(cleaned)

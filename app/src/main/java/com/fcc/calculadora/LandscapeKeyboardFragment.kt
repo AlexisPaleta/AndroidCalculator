@@ -27,6 +27,12 @@ class LandscapeKeyboardFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var basicNumbersVM: BasicNumbersViewModel
     private lateinit var buttonsBehavior: ButtonsBehavior
+    private lateinit var sin: String
+    private lateinit var cos: String
+    private lateinit var tan: String
+    private lateinit var sinh: String
+    private lateinit var cosh: String
+    private lateinit var tanh: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +65,12 @@ class LandscapeKeyboardFragment : Fragment() {
         }
 
         basicNumbersVM.isRadiansMode().observe(viewLifecycleOwner, radiansModeObserver)
+
+        val inverseTrigonometric = Observer<Boolean>{value ->
+           inverseOperations(value)
+        }
+
+        basicNumbersVM.isInverseTrigonometric().observe(viewLifecycleOwner, inverseTrigonometric)
 
         binding.ACbutton.setOnClickListener {
             buttonsBehavior.acButtonFunction()
@@ -226,32 +238,32 @@ class LandscapeKeyboardFragment : Fragment() {
         }
 
         binding.sinButton.setOnClickListener {
-            val value = buttonsBehavior.operationsWithOpenParenthesis("sin")
+            val value = buttonsBehavior.operationsWithOpenParenthesis(sin)
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.cosButton.setOnClickListener {
-            val value = buttonsBehavior.operationsWithOpenParenthesis("cos")
+            val value = buttonsBehavior.operationsWithOpenParenthesis(cos)
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.tanButton.setOnClickListener {
-            val value = buttonsBehavior.operationsWithOpenParenthesis("tan")
+            val value = buttonsBehavior.operationsWithOpenParenthesis(tan)
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.sinhButton.setOnClickListener {
-            val value = buttonsBehavior.operationsWithOpenParenthesis("sinh")
+            val value = buttonsBehavior.operationsWithOpenParenthesis(sinh)
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.coshButton.setOnClickListener {
-            val value = buttonsBehavior.operationsWithOpenParenthesis("cosh")
+            val value = buttonsBehavior.operationsWithOpenParenthesis(cosh)
             basicNumbersVM.setCurrentOperation(value)
         }
 
         binding.tanhButton.setOnClickListener {
-            val value = buttonsBehavior.operationsWithOpenParenthesis("tanh")
+            val value = buttonsBehavior.operationsWithOpenParenthesis(tanh)
             basicNumbersVM.setCurrentOperation(value)
         }
 
@@ -272,6 +284,48 @@ class LandscapeKeyboardFragment : Fragment() {
             }else if(value == false){
                 basicNumbersVM.setRadiansMode(true)
             }
+        }
+
+        binding.secoNDButton.setOnClickListener {
+            val value = basicNumbersVM.isInverseTrigonometric().value
+            if(value == true){
+                basicNumbersVM.setInverseTrigonometric(false)
+            }else if(value == false){
+                basicNumbersVM.setInverseTrigonometric(true)
+            }
+        }
+    }
+
+    fun inverseOperations(value: Boolean){
+        if (value){ //If the second button is pressed the value is true, the trigonometric buttons now show inverse operations
+            //and the strings that the buttons execute are the inverse ones
+            sin = getString(R.string.asin)
+            cos = getString(R.string.acos)
+            tan = getString(R.string.atan)
+            sinh = getString(R.string.asinh)
+            cosh = getString(R.string.acosh)
+            tanh = getString(R.string.atanh)
+
+            binding.sinButton.text = getString(R.string.asinButton)
+            binding.cosButton.text = getString(R.string.acosButton)
+            binding.tanButton.text = getString(R.string.atanButtoon)
+            binding.sinhButton.text = getString(R.string.asinhButton)
+            binding.coshButton.text = getString(R.string.acoshButton)
+            binding.tanhButton.text = getString(R.string.atanhButton)
+        }else{
+            sin = getString(R.string.sin)
+            cos = getString(R.string.cos)
+            tan = getString(R.string.tan)
+            sinh = getString(R.string.sinh)
+            cosh = getString(R.string.cosh)
+            tanh = getString(R.string.tanh)
+
+            binding.sinButton.text = sin
+            binding.cosButton.text = cos
+            binding.tanButton.text = tan
+            binding.sinhButton.text = sinh
+            binding.coshButton.text = cosh
+            binding.tanhButton.text = tanh
         }
     }
 

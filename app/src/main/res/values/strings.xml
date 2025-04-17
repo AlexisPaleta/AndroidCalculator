@@ -46,11 +46,23 @@
     <string name="tan">tan</string>
     <string name="e">𝑒</string>
     <string name="EE">EE</string>
-    <string name="sinH">sinh</string>
-    <string name="cosH">cosh</string>
-    <string name="tanH">tanh</string>
+    <string name="sinh">sinh</string>
+    <string name="cosh">cosh</string>
+    <string name="tanh">tanh</string>
     <string name="pi">π</string>
     <string name="Deg">Deg</string>
     <string name="Rand">Rand</string>
+    <string name="asin">asin</string>
+    <string name="acos">acos</string>
+    <string name="atan">atan</string>
+    <string name="asinh">asinh</string>
+    <string name="acosh">acosh</string>
+    <string name="atanh">atanh</string>
+    <string name="asinButton">sin⁻¹</string>
+    <string name="acosButton">cos⁻¹</string>
+    <string name="atanButtoon">tan⁻¹</string>
+    <string name="asinhButton">sinh⁻¹</string>
+    <string name="acoshButton">cosh⁻¹</string>
+    <string name="atanhButton">tanh⁻¹</string>
 
 </resources>
