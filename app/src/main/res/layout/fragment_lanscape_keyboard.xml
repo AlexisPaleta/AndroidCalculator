@@ -214,6 +214,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/special_buttons"
                 android:textColor="#d4ac0d"
+                android:textAllCaps="false"
                 android:text="@string/multiplication"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -418,7 +419,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/special_buttons"
-                android:textColor="#9a7d0a"
+                android:textColor="#d4ac0d"
                 android:text="@string/plus"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -434,7 +435,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_button"
+                android:background="@drawable/unique_button"
                 android:text="@string/calculator"
                 android:textSize="20sp" />
 

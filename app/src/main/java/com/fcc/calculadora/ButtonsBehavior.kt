@@ -53,7 +53,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
         }else if (!isMaximumNumberLength() && lastElement !in notPermittedSymbols && !currentNumber.endsWith("\uD835\uDC52")){// check if the current number is not too large and the just behind element
             //is not a percentage symbol
             basicNumbersVM.addDigit()
-            displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
+            //displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
             basicNumbersVM.addCharCurrentNumber(number)
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             basicNumbersVM.addCharEncapsulatedCurrentNumber(number)
@@ -532,7 +532,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //is not a percentage symbol
             basicNumbersVM.addDigit()
             basicNumbersVM.setOnlyWritePercentage(true)
-            displayMessage("In exponent, Current numberLength is " + basicNumbersVM.getNumberLength())
+            //displayMessage("In exponent, Current numberLength is " + basicNumbersVM.getNumberLength())
             basicNumbersVM.addStrCurrentNumber("^($exponent)")
             println("Current number: ${basicNumbersVM.getCurrentNumber()}")
             basicNumbersVM.addStrEncapsulatedCurrentNumber("^($exponent)")
@@ -568,7 +568,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //is not a percentage symbol
             basicNumbersVM.addDigit()
             basicNumbersVM.setOnlyWritePercentage(true)
-            displayMessage("In customExponent before left (, Current numberLength is " + basicNumbersVM.getNumberLength())
+            //displayMessage("In customExponent before left (, Current numberLength is " + basicNumbersVM.getNumberLength())
             basicNumbersVM.setCurrentOperation(currentValue + '^')
             basicNumbersVM.addCharCurrentNumber('^')
             basicNumbersVM.addCharEncapsulatedCurrentNumber('^')
@@ -611,7 +611,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
         //is not a percentage symbol
         basicNumbersVM.addDigit()
-        displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
+        //displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
         basicNumbersVM.addStrCurrentNumber(number)
         println("Current number in specialNumbers: ${basicNumbersVM.getCurrentNumber()}")
         basicNumbersVM.addStrEncapsulatedCurrentNumber(number)
@@ -679,7 +679,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             //is not a percentage symbol
             basicNumbersVM.addDigit()
             basicNumbersVM.setOnlyWritePercentage(true)
-            displayMessage("In operationsWithOpenParenthesis before left (, Current numberLength is " + basicNumbersVM.getNumberLength())
+            //displayMessage("In operationsWithOpenParenthesis before left (, Current numberLength is " + basicNumbersVM.getNumberLength())
             basicNumbersVM.setCurrentOperation(currentValue + operation)
             basicNumbersVM.addStrCurrentNumber(operation)
             basicNumbersVM.addStrEncapsulatedCurrentNumber(operation)
@@ -748,7 +748,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
 
 
         basicNumbersVM.setNumberLength(4)
-        displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
+        //displayMessage("Current numberLength is " + basicNumbersVM.getNumberLength())
         basicNumbersVM.addStrCurrentNumber(rnd)
         println("Current number in randomNumber: ${basicNumbersVM.getCurrentNumber()}")
         basicNumbersVM.addStrEncapsulatedCurrentNumber(rnd)

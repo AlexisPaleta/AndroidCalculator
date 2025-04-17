@@ -1,5 +1,7 @@
 package com.fcc.calculadora
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -295,6 +297,13 @@ class LandscapeKeyboardFragment : Fragment() {
             }else if(value == false){
                 basicNumbersVM.setInverseTrigonometric(true)
             }
+        }
+
+        binding.calculatorButton.setOnClickListener {
+            val url = "https://github.com/AlexisPaleta/AndroidCalculator"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+
         }
     }
 
