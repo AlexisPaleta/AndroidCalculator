@@ -528,7 +528,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return currentValue
         }
 
-        if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
+        //if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
             //is not a percentage symbol
             basicNumbersVM.addDigit()
             basicNumbersVM.setOnlyWritePercentage(true)
@@ -538,8 +538,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             basicNumbersVM.addStrEncapsulatedCurrentNumber("^($exponent)")
             println("Encapsulated Current number: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return currentValue + "^($exponent)"
-        }
-        return currentValue
+        //}
+        //return currentValue
 
     }
 
@@ -564,7 +564,7 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             return currentValue
         }
 
-        if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
+        //if (!isMaximumNumberLength()){// check if the current number is not too large and the just behind element
             //is not a percentage symbol
             basicNumbersVM.addDigit()
             basicNumbersVM.setOnlyWritePercentage(true)
@@ -580,8 +580,8 @@ class ButtonsBehavior(private val basicNumbersVM: BasicNumbersViewModel, private
             println("Current number in customExponent: ${basicNumbersVM.getCurrentNumber()}")
             println("Encapsulated Current number in customExponent: ${basicNumbersVM.getEncapsulatedCurrentNumber()}")
             return newString
-        }
-        return currentValue
+        //}
+        //return currentValue
     }
 
     fun specialNumbers(number: String): String{
